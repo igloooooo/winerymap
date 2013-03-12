@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_result_details">Details</string>
+    <string name="map_search_page">Location</string>
+    <string name="search_text">Search</string>
+    <string name="search_hit">Search</string>
+</resources>

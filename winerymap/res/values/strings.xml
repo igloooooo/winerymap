@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">winerymap</string>
+    <string name="hello">Hello World, Winery Map!</string>
+    <string name="app_name">Winery Map</string>
+    <string name="menu_net_update">TODO</string>
+    <string name="menu_recommand_friend">TODO</string>
+    <string name="menu_submit_proposal">TODO</string>
+    <string name="menu_help_information">TODO</string>
+    <string name="menu_about">TODO</string>
 </resources>
