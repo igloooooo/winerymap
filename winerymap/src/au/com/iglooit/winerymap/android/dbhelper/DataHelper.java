@@ -20,8 +20,6 @@ public class DataHelper extends OrmLiteSqliteOpenHelper
 
     private static final int DATABASE_VERSION = 1;
 
-    private Dao<WineryInfo, Integer> wineryDao = null;
-
 
     public DataHelper(Context context)
     {
@@ -34,6 +32,12 @@ public class DataHelper extends OrmLiteSqliteOpenHelper
         try
         {
             TableUtils.createTable(connectionSource, WineryInfo.class);
+            // insert init data
+            db.beginTransaction();
+            db.execSQL("INSERT INTO Winery_Info_T (lat, lng, keyValue, title) VALUES(53.558, 9.927,'try1','This is test 1')");
+            db.execSQL("INSERT INTO Winery_Info_T (lat, lng, keyValue, title) VALUES(53.551, 9.993,'try2','This is test 2')");
+            db.setTransactionSuccessful();
+            db.endTransaction();
         }
         catch (SQLException e)
         {
@@ -46,16 +50,6 @@ public class DataHelper extends OrmLiteSqliteOpenHelper
     public void close()
     {
         super.close();
-        wineryDao = null;
-    }
-
-    public Dao<WineryInfo, Integer> getWineryDataDao() throws SQLException
-    {
-        if (wineryDao == null)
-        {
-            wineryDao = getDao(WineryInfo.class);
-        }
-        return wineryDao;
     }
 
     /**
