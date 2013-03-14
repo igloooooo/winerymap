@@ -44,7 +44,7 @@ public class WineryInfoHelper extends DataHelper {
         Cursor cursor = null;
         try {
             QueryBuilder qb = getWineryDataDao().queryBuilder();
-            qb.where().like("title", name + "%");
+            qb.where().like("title", "%" + name + "%");
             iterator = getWineryDataDao().iterator(qb.prepare());
             // get the raw results which can be cast under Android
             AndroidDatabaseResults results = (AndroidDatabaseResults) iterator.getRawResults();
@@ -52,8 +52,8 @@ public class WineryInfoHelper extends DataHelper {
         } catch (SQLException e) {
             throw new AppX(e.getMessage());
         } finally {
-            if (iterator != null)
-                iterator.closeQuietly();
+//            if (iterator != null)
+//                iterator.closeQuietly();
         }
         return cursor;
     }

@@ -6,7 +6,7 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "Winery_Info_T")
 public class WineryInfo
 {
-    @DatabaseField(generatedId = true)
+    @DatabaseField(columnName = "_id", generatedId = true)
     public int id;
     @DatabaseField
     public double lat;

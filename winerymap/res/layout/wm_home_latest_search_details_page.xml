@@ -14,4 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         class="au.com.iglooit.winerymap.android.view.home.SearchBarFragment"/>
+    <ListView android:id="@+id/resultList1"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent" />
 </LinearLayout>
