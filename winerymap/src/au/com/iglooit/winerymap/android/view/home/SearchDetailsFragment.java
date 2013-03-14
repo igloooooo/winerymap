@@ -25,6 +25,8 @@ public class SearchDetailsFragment extends Fragment implements SearchBarFragment
     private SearchBarFragment searchBar;
     private ViewGroup root;
     private ListView mListView;
+    private SearchResultAdapter mAdapter;
+    private List<Map<String, Object>> mList = new ArrayList<Map<String, Object>>();
 
     public static Fragment newInstance(Context context)
     {
@@ -65,20 +67,9 @@ public class SearchDetailsFragment extends Fragment implements SearchBarFragment
         String[] mFrom = new String[]{"img", "title1", "title2", "time"};
         int[] mTo = new int[]{R.id.img, R.id.title1, R.id.title2, R.id.time};
         // get data from database
-        List<WineryInfo> resultList = getDataHelper().findWineryByName("This");
         List<Map<String, Object>> mList = new ArrayList<Map<String, Object>>();
-        Map<String, Object> mMap = null;
-        for (WineryInfo info : resultList)
-        {
-            mMap = new HashMap<String, Object>();
-            mMap.put("img", R.drawable.ic_launcher);
-            mMap.put("title1", info.id);
-            mMap.put("title2", info.title);
-            mMap.put("time", "2011-08-15 09:00");
-            mList.add(mMap);
-        }
 
-        SimpleAdapter mAdapter = new SimpleAdapter(root.getContext(), mList, R.layout.wm_home_search_result_list_item,
+        mAdapter = new SearchResultAdapter(root.getContext(), mList, R.layout.wm_home_search_result_list_item,
             mFrom, mTo);
         mListView.setAdapter(mAdapter);
 
@@ -108,8 +99,8 @@ public class SearchDetailsFragment extends Fragment implements SearchBarFragment
         String[] mFrom = new String[]{"img", "title1", "title2", "time"};
         int[] mTo = new int[]{R.id.img, R.id.title1, R.id.title2, R.id.time};
         List<WineryInfo> resultList = getDataHelper().findWineryByName(content);
-        List<Map<String, Object>> mList = new ArrayList<Map<String, Object>>();
         Map<String, Object> mMap = null;
+        mList = new ArrayList<Map<String, Object>>();
         for (WineryInfo info : resultList)
         {
             mMap = new HashMap<String, Object>();
@@ -119,9 +110,7 @@ public class SearchDetailsFragment extends Fragment implements SearchBarFragment
             mMap.put("time", "2011-08-15 09:00");
             mList.add(mMap);
         }
-
-        SimpleAdapter mAdapter = new SimpleAdapter(root.getContext(), mList, R.layout.wm_home_search_result_list_item,
-            mFrom, mTo);
-        mListView.setAdapter(mAdapter);
+        mAdapter.mItemList = mList;
+        mListView.invalidateViews();
     }
 }

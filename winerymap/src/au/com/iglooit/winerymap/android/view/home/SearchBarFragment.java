@@ -76,8 +76,9 @@ public class SearchBarFragment extends Fragment
                     {
                         listener.onTextViewEnter(textView.getText().toString());
                     }
+                    return true;
                 }
-                return true;
+                return false;
             }
         });
 
