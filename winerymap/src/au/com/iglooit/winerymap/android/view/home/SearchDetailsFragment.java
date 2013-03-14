@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import au.com.iglooit.winerymap.android.R;
@@ -69,8 +70,7 @@ public class SearchDetailsFragment extends Fragment implements SearchBarFragment
         // get data from database
         List<Map<String, Object>> mList = new ArrayList<Map<String, Object>>();
 
-        mAdapter = new SearchResultAdapter(root.getContext(), mList, R.layout.wm_home_search_result_list_item,
-            mFrom, mTo);
+        mAdapter =  new SearchResultAdapter(root.getContext(), R.layout.wm_home_search_result_list_item, new ArrayList<WineryInfo>());
         mListView.setAdapter(mAdapter);
 
         // listener
@@ -110,7 +110,8 @@ public class SearchDetailsFragment extends Fragment implements SearchBarFragment
             mMap.put("time", "2011-08-15 09:00");
             mList.add(mMap);
         }
-        mAdapter.mItemList = mList;
+        mAdapter.clear();
+        mAdapter.addAll(resultList);
         mListView.invalidateViews();
     }
 }

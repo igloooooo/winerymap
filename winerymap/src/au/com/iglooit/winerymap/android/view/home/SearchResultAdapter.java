@@ -3,48 +3,55 @@ package au.com.iglooit.winerymap.android.view.home;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import au.com.iglooit.winerymap.android.R;
+import au.com.iglooit.winerymap.android.entity.WineryInfo;
 
-import java.util.List;
-import java.util.Map;
+import java.util.ArrayList;
 
-public class SearchResultAdapter extends SimpleAdapter {
-    public List<Map<String, Object>> mItemList;
-    int count = 0;
+public class SearchResultAdapter extends ArrayAdapter<WineryInfo> {
+    Context context;
+    int layoutResourceId;
+    ArrayList<WineryInfo> data = null;
 
-    public SearchResultAdapter(Context context, List<? extends Map<String, ?>> data, int resource, String[] from, int[] to) {
-        super(context, data, resource, from, to);
-        mItemList = (List<Map<String, Object>>) data;
-        if (data == null) {
-            count = 0;
-        } else {
-            count = data.size();
-        }
-    }
-    public int getCount() {
-        return mItemList.size();
-    }
-
-    public Object getItem(int pos) {
-        return pos;
-    }
-
-    public long getItemId(int pos) {
-        return pos;
+    public SearchResultAdapter(Context context, int textViewResourceId, ArrayList<WineryInfo> objects) {
+        super(context, textViewResourceId, objects);
+        this.context = context;
+        this.layoutResourceId = textViewResourceId;
+        this.data = objects;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Map<String ,Object> map = mItemList.get(position);
-        View view = super.getView(position, convertView, parent);
-        ImageView imageview = (ImageView)view.findViewById(R.id.img);
+        View row = convertView;
+        WineryInfoHolder holder = null;
 
-        TextView tv = (TextView)view.findViewById(R.id.title1);
-        tv.setText((String)map.get("title1"));
+        if (row == null) {
+            View view = super.getView(position, convertView, parent);
 
-        return view;
+            holder = new WineryInfoHolder();
+            holder.imgIcon = (ImageView) row.findViewById(R.id.img);
+            holder.txtTitle1 = (TextView) row.findViewById(R.id.title1);
+            holder.txtTitle2 = (TextView) row.findViewById(R.id.title2);
+            row.setTag(holder);
+        } else {
+            holder = (WineryInfoHolder) row.getTag();
+        }
+
+        WineryInfo info = data.get(position);
+        holder.txtTitle1.setText(info.id);
+        holder.txtTitle2.setText(info.title);
+        holder.imgIcon.setImageResource(R.drawable.ic_launcher);
+
+        return row;
+    }
+
+    static class WineryInfoHolder {
+        ImageView imgIcon;
+        TextView txtTitle1;
+        TextView txtTitle2;
+        TextView time;
     }
 }
