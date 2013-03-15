@@ -32,8 +32,8 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".view.home.MapSearchPage" android:label="@string/map_search_page"/>
-        <activity android:name=".view.home.SearchDetailsPage" android:label="@string/search_result_details" />
+        <activity android:name=".view.winerydetails.WineryDetailsActivity"/>
+
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBEMO2nU3AiU9iAXadG-doL5OIqBGEEihw"/>

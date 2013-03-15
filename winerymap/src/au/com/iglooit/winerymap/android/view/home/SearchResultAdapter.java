@@ -10,16 +10,18 @@ import au.com.iglooit.winerymap.android.R;
 import au.com.iglooit.winerymap.android.entity.WineryInfo;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SearchResultAdapter extends ArrayAdapter<WineryInfo> {
     Context context;
     int layoutResourceId;
-    ArrayList<WineryInfo> data = null;
+    List<WineryInfo> data = null;
 
-    public SearchResultAdapter(Context context, int textViewResourceId, ArrayList<WineryInfo> objects) {
-        super(context, textViewResourceId, objects);
+    public SearchResultAdapter(Context context, int resource, int textViewResourceId, List<WineryInfo> objects)
+    {
+        super(context, resource, textViewResourceId, objects);
         this.context = context;
-        this.layoutResourceId = textViewResourceId;
+        this.layoutResourceId = resource;
         this.data = objects;
     }
 

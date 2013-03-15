@@ -4,7 +4,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="75dp"
                 android:paddingLeft="10dp"
-                android:paddingRight="10dp">
+                android:paddingRight="10dp" android:background="@drawable/wm_home_winery_list_bg">
 
     <ImageView
         android:id="@+id/img"
