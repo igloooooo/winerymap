@@ -33,6 +33,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".view.winerydetails.WineryDetailsActivity"/>
+        <activity android:name=".view.myfavorite.MyFavoriteActivity" />
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"

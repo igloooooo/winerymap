@@ -58,6 +58,27 @@ public class WineryInfoHelper extends DataHelper {
         return cursor;
     }
 
+    public WineryInfo findWineryById(int id)
+    {
+        try {
+            QueryBuilder qb = getWineryDataDao().queryBuilder();
+            qb.where().eq("id", id);
+            List<WineryInfo> result = qb.query();
+            if (result != null && result.size() > 0)
+            {
+                return result.get(0);
+            }
+            else
+            {
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new AppX(e.getMessage());
+        } finally {
+
+        }
+    }
+
     @Override
     public void close() {
         super.close();

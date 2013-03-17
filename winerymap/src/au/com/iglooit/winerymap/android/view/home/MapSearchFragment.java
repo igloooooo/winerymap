@@ -154,7 +154,7 @@ public class MapSearchFragment extends Fragment
         this.progressDialog = ProgressDialog.show(this.getActivity(), "working . . .", "performing HTTP request");
     }
 
-    public String urlBuilder(LatLng startPosition, LatLng destination)
+    private String urlBuilder(LatLng startPosition, LatLng destination)
     {
         StringBuilder builder = new StringBuilder("http://maps.google.com/maps/api/directions/json?origin=");
         builder.append(convertToParam(startPosition));
@@ -165,7 +165,7 @@ public class MapSearchFragment extends Fragment
         return builder.toString();
     }
 
-    public String convertToParam(LatLng position)
+    private String convertToParam(LatLng position)
     {
         return "(" + position.latitude + "," + position.longitude + ")";
     }
