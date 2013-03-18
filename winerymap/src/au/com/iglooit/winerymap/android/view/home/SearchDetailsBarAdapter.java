@@ -47,7 +47,7 @@ public class SearchDetailsBarAdapter extends SimpleAdapter
         Map<String, Object> map = data.get(position);
         View view = super.getView(position, convertView, parent);
         TextView tv = (TextView)view.findViewById(R.id.title1);
-        tv.setText((String)map.get("title1"));
+        tv.setText(((Integer)map.get("title1")).toString());
         return view;
     }
 }

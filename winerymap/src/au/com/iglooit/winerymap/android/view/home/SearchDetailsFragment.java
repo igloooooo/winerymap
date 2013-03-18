@@ -2,6 +2,7 @@ package au.com.iglooit.winerymap.android.view.home;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -32,6 +33,7 @@ public class SearchDetailsFragment extends Fragment implements SearchDetailsBarF
     private ListView mListView;
     private SearchDetailsBarAdapter mAdapter;
     private List<Map<String, Object>> mList;
+    private String content;
     AQuery aq;
 
     public static Fragment newInstance(Context context)
@@ -82,7 +84,7 @@ public class SearchDetailsFragment extends Fragment implements SearchDetailsBarF
 
         mMap = new HashMap<String, Object>();
         mMap.put("img", R.drawable.ic_launcher);
-        mMap.put("title1", "Remove");
+        mMap.put("title1", 0);
         mMap.put("title2", "Remove All");
         mMap.put("time", "2011-08-15 09:00");
         mList.add(mMap);
@@ -123,7 +125,9 @@ public class SearchDetailsFragment extends Fragment implements SearchDetailsBarF
     {
         if(aq.id(R.id.searchText).getText().length() > 1)
         {
-            onTextViewEnter(aq.id(R.id.searchText).getText().toString());
+            content = aq.id(R.id.searchText).getText().toString();
+            new myAsyncTask().execute(null);
+//            onTextViewEnter();
         }
     }
 
@@ -153,8 +157,13 @@ public class SearchDetailsFragment extends Fragment implements SearchDetailsBarF
                     mMap.put("time", "2011-08-15 09:00");
                     mList.add(mMap);
                 }
-                mAdapter.data = mList;
+                String[] mFrom = new String[]{"img", "title1", "title2", "time"};
+                int[] mTo = new int[]{R.id.img, R.id.title1, R.id.title2, R.id.time};
+                mAdapter = new SearchDetailsBarAdapter(root.getContext(), mList, R.layout.wm_home_search_result_list_item,
+                        mFrom, mTo);
+                mListView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
+                mListView.invalidateViews();
                 Toast.makeText(SearchDetailsFragment.this.getActivity(), "Refreshing...", Toast.LENGTH_SHORT).show();
             }
         });
@@ -163,11 +172,47 @@ public class SearchDetailsFragment extends Fragment implements SearchDetailsBarF
 
     public void onTextViewEnter1(final CharSequence s, int start, int before, int count)
     {
-        String content = s.toString();
-        if (content != null && content.length() >= 2)
+        String content1 = s.toString();
+        if (content1 != null && content1.length() >= 2)
         {
 //            onTextViewEnter(content);
 
         }
+    }
+
+    private class myAsyncTask extends AsyncTask<Void, Void, Void>
+    {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            List<WineryInfo> resultList = getDataHelper().findWineryByName(content);
+            Map<String, Object> mMap = null;
+            mList = new ArrayList<Map<String, Object>>() ;
+            for (WineryInfo info : resultList)
+            {
+                mMap = new HashMap<String, Object>();
+                mMap.put("img", R.drawable.ic_launcher);
+                mMap.put("id", info.id);
+                mMap.put("title1", info.id);
+                mMap.put("title2", info.title);
+                mMap.put("time", "2011-08-15 09:00");
+                mList.add(mMap);
+            }
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            mAdapter.data = mList;
+            mAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
     }
 }
