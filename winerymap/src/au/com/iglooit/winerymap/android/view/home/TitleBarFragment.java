@@ -17,7 +17,7 @@ public class TitleBarFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle)
     {
-        ViewGroup root = (ViewGroup)layoutInflater.inflate(R.layout.wm_home_title_bar, null);
+        ViewGroup root = (ViewGroup)layoutInflater.inflate(R.layout.wm_home_title_bar_fragment, null);
         aq = new AQuery(root);
         aq.id(R.id.goHomeButton).clicked(this, "onClickHomeButton");
         return root;

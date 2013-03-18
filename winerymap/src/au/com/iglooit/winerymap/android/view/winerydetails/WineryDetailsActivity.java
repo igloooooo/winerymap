@@ -2,23 +2,16 @@ package au.com.iglooit.winerymap.android.view.winerydetails;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import au.com.iglooit.winerymap.android.R;
 import au.com.iglooit.winerymap.android.constants.ApplicationConstants;
-import au.com.iglooit.winerymap.android.core.navigation.Direction;
-import au.com.iglooit.winerymap.android.core.navigation.Kit;
 import au.com.iglooit.winerymap.android.entity.dto.WineryInfoDTO;
 import au.com.iglooit.winerymap.android.exception.AppX;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
 import org.json.JSONObject;
-
-import java.util.List;
 
 public class WineryDetailsActivity extends FragmentActivity
 {
@@ -29,7 +22,7 @@ public class WineryDetailsActivity extends FragmentActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.wm_winery_details);
+        setContentView(R.layout.wm_winery_details_layout);
         aq = new AQuery(this);
         initContent();
     }
@@ -39,9 +32,12 @@ public class WineryDetailsActivity extends FragmentActivity
         Intent intent = getIntent();
         Integer id = intent.getIntExtra(ApplicationConstants.WINERY_ID, ApplicationConstants.INVALID_ID);
         String key = intent.getStringExtra(ApplicationConstants.WINERY_KEY);
+        aq.id(R.id.wineryName).text("Test Winery Name");
+        aq.id(R.id.wineryDescription).text("This is the description for test winery. (id is " + id + ", " +
+            "key is " + key + ")");
 
-        aq.ajax(urlBuilder(key), JSONObject.class, this, "jsonCallback");
-        this.progressDialog = ProgressDialog.show(this, "Getting Winery Details", "Connecting to the database...");
+//        aq.ajax(urlBuilder(key), JSONObject.class, this, "jsonCallback");
+//        this.progressDialog = ProgressDialog.show(this, "Getting Winery Details", "Connecting to the database...");
     }
 
     public void jsonCallback(String url, JSONObject json, AjaxStatus status)
