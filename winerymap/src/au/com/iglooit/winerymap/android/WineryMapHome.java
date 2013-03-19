@@ -1,6 +1,7 @@
 package au.com.iglooit.winerymap.android;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -15,6 +16,8 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 import au.com.iglooit.winerymap.android.core.component.ScrollLayout;
 import au.com.iglooit.winerymap.android.view.home.HomePageViewAdapter;
+import au.com.iglooit.winerymap.android.view.search.SearchWineryActivity;
+import com.androidquery.AQuery;
 
 import java.util.ArrayList;
 
@@ -35,6 +38,7 @@ public class WineryMapHome extends FragmentActivity
     private FragmentManager manager = null;
     private Context context = null;
     private HomePageViewAdapter homePageViewAdapter;
+    private AQuery aq;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -42,6 +46,7 @@ public class WineryMapHome extends FragmentActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.wm_home_layout);
         context = WineryMapHome.this;
+        aq = new AQuery(this);
         initView();
     }
 
@@ -68,6 +73,7 @@ public class WineryMapHome extends FragmentActivity
         homePageViewAdapter = new HomePageViewAdapter(getApplicationContext(), getSupportFragmentManager());
         viewpage.setAdapter(homePageViewAdapter);
         viewpage.setCurrentItem(0);
+        aq.id(R.id.goto_search_page).clicked(this, "goToSearch");
     }
 
     public class MyOnClickListener implements View.OnClickListener
@@ -134,5 +140,11 @@ public class WineryMapHome extends FragmentActivity
             ((ViewPager)container).addView(views.get(position));
             return views.get(position);
         }
+    }
+
+    public void goToSearch(View view)
+    {
+        Intent searchIntent = new Intent(this, SearchWineryActivity.class);
+        startActivity(searchIntent);
     }
 }

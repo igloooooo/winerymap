@@ -207,7 +207,7 @@
                         android:orientation="vertical" >
 
                         <TextView
-                            android:id="@id/menu_net_udpate"
+                            android:id="@+id/goto_search_page"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="8.0dip"
@@ -218,9 +218,11 @@
                             android:gravity="center"
                             android:paddingBottom="3.0dip"
                             android:paddingTop="3.0dip"
-                            android:text="@string/menu_net_update"
+                            android:text="@string/search_text"
                             android:textColor="@color/white"
-                            android:textSize="14.0sp" />
+                            android:textSize="14.0sp"
+                            android:focusable="true"
+                                       android:clickable="true"/>
 
                         <TextView
                             android:id="@id/menu_recommand_friend"

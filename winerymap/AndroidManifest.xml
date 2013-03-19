@@ -35,6 +35,7 @@
         <activity android:name=".view.winerydetails.WineryDetailsActivity"/>
         <activity android:name=".view.myfavorite.MyFavoriteActivity" />
         <activity android:name=".view.news.NewsActivity" />
+        <activity android:name=".view.search.SearchWineryActivity" />
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"

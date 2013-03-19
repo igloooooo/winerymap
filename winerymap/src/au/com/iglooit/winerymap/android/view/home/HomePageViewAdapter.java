@@ -24,9 +24,12 @@ public class HomePageViewAdapter extends FragmentPagerAdapter
         switch (position)
         {
             case 0:
-                f = MapSearchFragment.newInstance(_context);
+                f = MyFavoriteFragment.newInstance(_context);
                 break;
             case 1:
+                f = MapSearchFragment.newInstance(_context);
+                break;
+            case 2:
                 f = SearchDetailsFragment.newInstance(_context);
                 break;
         }
