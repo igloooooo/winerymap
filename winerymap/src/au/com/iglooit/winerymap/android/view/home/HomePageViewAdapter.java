@@ -24,7 +24,7 @@ public class HomePageViewAdapter extends FragmentPagerAdapter
         switch (position)
         {
             case 0:
-                f = MyFavoriteFragment.newInstance(_context);
+                f = NewsFragment.newInstance(_context);
                 break;
             case 1:
                 f = MapSearchFragment.newInstance(_context);
@@ -39,6 +39,6 @@ public class HomePageViewAdapter extends FragmentPagerAdapter
     @Override
     public int getCount()
     {
-        return 2;
+        return 3;
     }
 }

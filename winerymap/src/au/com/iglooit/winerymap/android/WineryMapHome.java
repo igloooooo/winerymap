@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 import au.com.iglooit.winerymap.android.core.component.ScrollLayout;
 import au.com.iglooit.winerymap.android.view.home.HomePageViewAdapter;
+import au.com.iglooit.winerymap.android.view.news.NewsActivity;
 import au.com.iglooit.winerymap.android.view.search.SearchWineryActivity;
 import com.androidquery.AQuery;
 
@@ -74,6 +75,7 @@ public class WineryMapHome extends FragmentActivity
         viewpage.setAdapter(homePageViewAdapter);
         viewpage.setCurrentItem(0);
         aq.id(R.id.goto_search_page).clicked(this, "goToSearch");
+        aq.id(R.id.goto_news_page).clicked(this, "goToNews");
     }
 
     public class MyOnClickListener implements View.OnClickListener
@@ -145,6 +147,12 @@ public class WineryMapHome extends FragmentActivity
     public void goToSearch(View view)
     {
         Intent searchIntent = new Intent(this, SearchWineryActivity.class);
+        startActivity(searchIntent);
+    }
+
+    public void goToNews(View view)
+    {
+        Intent searchIntent = new Intent(this, NewsActivity.class);
         startActivity(searchIntent);
     }
 }

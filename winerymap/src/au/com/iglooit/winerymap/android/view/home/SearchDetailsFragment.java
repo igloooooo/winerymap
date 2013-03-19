@@ -176,7 +176,7 @@ public class SearchDetailsFragment extends Fragment implements SearchDetailsBarF
         if (content1 != null && content1.length() >= 2)
         {
 //            onTextViewEnter(content);
-
+            new myAsyncTask().execute(null);
         }
     }
 
@@ -205,8 +205,13 @@ public class SearchDetailsFragment extends Fragment implements SearchDetailsBarF
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            mAdapter.data = mList;
-            mAdapter.notifyDataSetChanged();
+//            mAdapter.data = mList;
+//            mAdapter.notifyDataSetChanged();
+            String[] mFrom = new String[]{"img", "title1", "title2", "time"};
+            int[] mTo = new int[]{R.id.img, R.id.title1, R.id.title2, R.id.time};
+            mAdapter = new SearchDetailsBarAdapter(root.getContext(), mList, R.layout.wm_home_search_result_list_item,
+                    mFrom, mTo);
+            mListView.setAdapter(mAdapter);
         }
 
         @Override

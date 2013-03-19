@@ -5,12 +5,14 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
     <fragment
-        android:id="@+id/searchBar"
+        android:id="@+id/title_bar_news"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         class="au.com.iglooit.winerymap.android.view.home.TitleBarFragment"/>
-    <ListView
-            android:id="@+id/resultList1"
+
+    <au.com.iglooit.winerymap.android.core.component.ScrollableListView
+            android:id="@+id/resultList_news"
             android:layout_height="fill_parent"
             android:layout_width="fill_parent"/>
+
 </LinearLayout>

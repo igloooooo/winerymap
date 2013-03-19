@@ -4,4 +4,5 @@
     <string name="map_search_page">Location</string>
     <string name="search_text">Search</string>
     <string name="search_hit">Search</string>
+    <string name="news">News</string>
 </resources>
