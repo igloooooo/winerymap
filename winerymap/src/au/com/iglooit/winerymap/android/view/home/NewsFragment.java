@@ -95,7 +95,7 @@ public class NewsFragment extends Fragment
         final ScrollableListView listView = (ScrollableListView)root.findViewById(R.id.resultList_news);
         adapter = new BaseAdapter() {
             public View getView(int position, View convertView, ViewGroup parent) {
-                TextView tv = new TextView(root.getContext());
+                TextView tv = new TextView(getActivity());
                 tv.setText(data.get(position));
                 return tv;
             }
