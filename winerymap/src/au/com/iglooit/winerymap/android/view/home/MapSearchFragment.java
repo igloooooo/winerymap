@@ -1,5 +1,6 @@
 package au.com.iglooit.winerymap.android.view.home;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -45,6 +46,7 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
     private GoogleMap mMap;
     private AQuery aq;
     private ProgressDialog progressDialog;
+    private Activity parentActivity;
 
     private POIMenuImageView mImageViewCamera;
     private TranslateAnimation cameraOutTA;//
@@ -72,6 +74,8 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
     private boolean isClockwise = true;
     private AnimationSet mAnimationScaleAnimation;
 
+    private ViewGroup root;
+
     private final String URL = "http://maps.google.com/maps/api/directions/json?origin=" + HAMBURG
         + "&destination=" + KIEL.toString()
         + "&mode=driving"
@@ -84,12 +88,23 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        parentActivity = activity;
+    }
+
+    @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle)
     {
-        ViewGroup root = (ViewGroup)layoutInflater.inflate(R.layout.wm_home_map_search_fragment, null);
+        root = (ViewGroup)layoutInflater.inflate(R.layout.wm_home_map_search_fragment, null);
         aq = new AQuery(root);
-        setUpMapIfNeeded();
         return root;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);    //To change body of overridden methods use File | Settings | File Templates.
+        setUpMapIfNeeded();
     }
 
     private void setUpMapIfNeeded()
@@ -140,7 +155,6 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
         Marker hamburg = mMap.addMarker(new MarkerOptions().position(HAMBURG)
             .title("Hamburg"));
         hamburg.hideInfoWindow();
-
         Marker kiel = mMap.addMarker(new MarkerOptions()
             .position(KIEL)
             .title("Kiel")
@@ -187,7 +201,13 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
 
         mIImageViewAnimationCallBack = new ImageViewAnimationCallBack();
         mAnimationScaleAnimation = (AnimationSet)AnimationUtils.loadAnimation(
-            this.getActivity(), R.anim.scaleset);
+            parentActivity, R.anim.scaleset);
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                onMarkerClick(marker);
+            }
+        });
     }
 
     private String urlBuilder(LatLng startPosition, LatLng destination)
@@ -212,7 +232,7 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
         if (isClockwise)
         {
             mImageViewCamera.startAnimation(cameraOutTA);
-            // mImageViewCamera.startAnimation(mAnimationSetCamerOut);
+//            mImageViewCamera.startAnimation(mAnimationSetCamerOut);
             mImageViewCamera.setVisibility(View.VISIBLE);
 
             withOutTA.setStartOffset(20);
@@ -226,7 +246,6 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
         }
         else
         {
-
             thoughtInTA.setStartOffset(20);
             mImageViewivThought.startAnimation(thoughtInTA);
             mImageViewivThought.setVisibility(View.GONE);
@@ -239,7 +258,7 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
             mImageViewCamera.startAnimation(cameraInTA);
             mImageViewCamera.setVisibility(View.GONE);
         }
-        return false;
+        return true;
     }
 
     private void initAnimationView()
@@ -254,7 +273,7 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
 
         // float flexOffset=5.0f;
 
-        mImageViewCamera = (POIMenuImageView)this.getActivity().findViewById(R.id.ivCamera);
+        mImageViewCamera = (POIMenuImageView)root.findViewById(R.id.ivCamera);
         mImageViewCamera.setOnClickListener(this);
         mImageViewCamera.setAnimationCallBack(mIImageViewAnimationCallBack);
 
@@ -274,7 +293,7 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
             Animation.ABSOLUTE, 240.0f + mIntInsHeight);
         cameraInTA.setDuration(mIntAnimationDuration);
 
-        mImageViewivWith = (POIMenuImageView)this.getActivity().findViewById(R.id.ivWith);
+        mImageViewivWith = (POIMenuImageView)root.findViewById(R.id.ivWith);
         mImageViewivWith.setOnClickListener(this);
         mImageViewivWith.setAnimationCallBack(mIImageViewAnimationCallBack);
 
@@ -293,7 +312,7 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
             Animation.ABSOLUTE, 225.0f);
         withInTA.setDuration(mIntAnimationDuration);
 
-        mImageViewivThought = (POIMenuImageView)this.getActivity().findViewById(R.id.ivThought);
+        mImageViewivThought = (POIMenuImageView)root.findViewById(R.id.ivThought);
         mImageViewivThought.setOnClickListener(this);
         mImageViewivThought.setAnimationCallBack(mIImageViewAnimationCallBack);
 
