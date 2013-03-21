@@ -88,7 +88,8 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
     }
 
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(Activity activity)
+    {
         super.onAttach(activity);
         parentActivity = activity;
     }
@@ -102,8 +103,10 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);    //To change body of overridden methods use File | Settings | File Templates.
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);    //To change body of overridden methods use File | Settings |
+        // File Templates.
         setUpMapIfNeeded();
     }
 
@@ -202,12 +205,6 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
         mIImageViewAnimationCallBack = new ImageViewAnimationCallBack();
         mAnimationScaleAnimation = (AnimationSet)AnimationUtils.loadAnimation(
             parentActivity, R.anim.scaleset);
-        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-            @Override
-            public void onInfoWindowClick(Marker marker) {
-                onMarkerClick(marker);
-            }
-        });
     }
 
     private String urlBuilder(LatLng startPosition, LatLng destination)
@@ -242,6 +239,7 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
             thoughtOutTA.setStartOffset(80);
             mImageViewivThought.startAnimation(thoughtOutTA);
             mImageViewivThought.setVisibility(View.VISIBLE);
+            isClockwise = false;
 
         }
         else
@@ -257,6 +255,7 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
             cameraInTA.setStartOffset(100);
             mImageViewCamera.startAnimation(cameraInTA);
             mImageViewCamera.setVisibility(View.GONE);
+            isClockwise = true;
         }
         return true;
     }
@@ -381,6 +380,9 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
                 break;
             case R.id.ivWith:
                 mImageViewivWith.startAnimation(mAnimationScaleAnimation);
+                break;
+            case R.id.ivThought:
+                mImageViewivThought.startAnimation(mAnimationScaleAnimation);
                 break;
 
         }

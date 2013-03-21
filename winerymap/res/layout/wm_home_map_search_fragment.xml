@@ -31,6 +31,7 @@
                 android:layout_marginLeft="5dp"
                 android:scaleType="center"
                 android:src="@drawable/composer_camera"
+                android:visibility="invisible"
                 android:clickable="true"/>
 
         <au.com.iglooit.winerymap.android.core.component.poimenu.POIMenuImageView
@@ -42,6 +43,7 @@
                 android:layout_marginLeft="25dp"
                 android:scaleType="center"
                 android:src="@drawable/composer_with"
+                android:visibility="invisible"
                 android:clickable="true"/>
 
         <au.com.iglooit.winerymap.android.core.component.poimenu.POIMenuImageView
@@ -53,6 +55,7 @@
                 android:layout_marginLeft="55dp"
                 android:scaleType="center"
                 android:src="@drawable/composer_thought"
+                android:visibility="invisible"
                 android:clickable="true"/>
     </RelativeLayout>
 
