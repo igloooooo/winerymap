@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.LocationManager;
@@ -73,6 +74,7 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
     private ImageViewAnimationCallBack mIImageViewAnimationCallBack;
     private boolean isClockwise = true;
     private AnimationSet mAnimationScaleAnimation;
+    private Fragment searchBar;
 
     private ViewGroup root;
 
@@ -97,7 +99,7 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle)
     {
-        root = (ViewGroup)layoutInflater.inflate(R.layout.wm_home_map_search_fragment, null);
+        root = (ViewGroup)layoutInflater.inflate(R.layout.wm_home_map_search_fragment, viewGroup, false);
         aq = new AQuery(root);
         return root;
     }
@@ -106,6 +108,7 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);    //To change body of overridden methods use File | Settings |
+        searchBar = this.getActivity().getSupportFragmentManager().findFragmentById(R.id.searchBar);
         // File Templates.
         setUpMapIfNeeded();
     }
@@ -226,10 +229,23 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
     @Override
     public boolean onMarkerClick(Marker marker)
     {
+        Point position = mMap.getProjection().toScreenLocation(marker.getPosition());
         if (isClockwise)
         {
+            Point basePoint = position;
+            // parent position?
+            cameraOutTA = new TranslateAnimation(0, 0, 100, 20);
+            cameraOutTA.setDuration(mIntAnimationDuration);
+
+            cameraOutTA2 = new TranslateAnimation(0, 0, 20, 0);
+            cameraOutTA2.setDuration(100);
+
+
+            cameraInTA = new TranslateAnimation(0, 0, 0, 100);
+            cameraInTA.setDuration(mIntAnimationDuration);
+            position.y = position.y + searchBar.getView().getHeight() - 100;
+            mImageViewCamera.setLocation(position);
             mImageViewCamera.startAnimation(cameraOutTA);
-//            mImageViewCamera.startAnimation(mAnimationSetCamerOut);
             mImageViewCamera.setVisibility(View.VISIBLE);
 
             withOutTA.setStartOffset(20);
@@ -276,20 +292,20 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
         mImageViewCamera.setOnClickListener(this);
         mImageViewCamera.setAnimationCallBack(mIImageViewAnimationCallBack);
 
-        cameraOutTA = new TranslateAnimation(Animation.ABSOLUTE, 0.0f,
-            Animation.ABSOLUTE, 0.0f, Animation.ABSOLUTE, 240.0f,
-            Animation.ABSOLUTE, 0.0f);
+        cameraOutTA = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
+            Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 40.0f,
+            Animation.RELATIVE_TO_SELF, 10.0f);
         cameraOutTA.setDuration(mIntAnimationDuration);
 
-        cameraOutTA2 = new TranslateAnimation(Animation.ABSOLUTE, 0.0f,
-            Animation.ABSOLUTE, 0.0f, Animation.ABSOLUTE, -10f,
-            Animation.ABSOLUTE, 0.0f);
+        cameraOutTA2 = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
+            Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 10f,
+            Animation.RELATIVE_TO_SELF, 0.0f);
         cameraOutTA2.setDuration(100);
 
 
-        cameraInTA = new TranslateAnimation(Animation.ABSOLUTE, 0.0f,
-            Animation.ABSOLUTE, 0.0f, Animation.ABSOLUTE, 0.0f,
-            Animation.ABSOLUTE, 240.0f + mIntInsHeight);
+        cameraInTA = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
+            Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f,
+            Animation.RELATIVE_TO_SELF, 240.0f + mIntInsHeight);
         cameraInTA.setDuration(mIntAnimationDuration);
 
         mImageViewivWith = (POIMenuImageView)root.findViewById(R.id.ivWith);
