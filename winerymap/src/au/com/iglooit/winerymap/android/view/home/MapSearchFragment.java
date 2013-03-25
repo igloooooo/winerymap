@@ -21,6 +21,8 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
 import au.com.iglooit.winerymap.android.R;
+import au.com.iglooit.winerymap.android.core.component.poimenu.AnimationFactory;
+import au.com.iglooit.winerymap.android.core.component.poimenu.MenuItemAnimationType;
 import au.com.iglooit.winerymap.android.core.component.poimenu.POIMenuImageView;
 import au.com.iglooit.winerymap.android.core.navigation.Direction;
 import au.com.iglooit.winerymap.android.core.navigation.Kit;
@@ -44,6 +46,7 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
     private String tag = "MapSearchFragment";
     static final LatLng HAMBURG = new LatLng(53.558, 9.927);
     static final LatLng KIEL = new LatLng(53.551, 9.993);
+
     private GoogleMap mMap;
     private AQuery aq;
     private ProgressDialog progressDialog;
@@ -232,27 +235,32 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
         Point position = mMap.getProjection().toScreenLocation(marker.getPosition());
         if (isClockwise)
         {
-            Point basePoint = position;
+            Point basePoint = new Point(position.x, position.y + searchBar.getView().getHeight());
             // parent position?
-            cameraOutTA = new TranslateAnimation(0, 0, 100, 20);
+            cameraOutTA = new TranslateAnimation(0, 0, POIMenuImageView.RADIUS, 20);
             cameraOutTA.setDuration(mIntAnimationDuration);
 
             cameraOutTA2 = new TranslateAnimation(0, 0, 20, 0);
             cameraOutTA2.setDuration(100);
 
 
-            cameraInTA = new TranslateAnimation(0, 0, 0, 100);
+            cameraInTA = new TranslateAnimation(0, 0, 0, POIMenuImageView.RADIUS);
             cameraInTA.setDuration(mIntAnimationDuration);
-            position.y = position.y + searchBar.getView().getHeight() - 100;
-            mImageViewCamera.setLocation(position);
+
+            Point cameraPoint = new Point(basePoint.x, basePoint.y - POIMenuImageView.RADIUS);
+            mImageViewCamera.setLocation(cameraPoint);
             mImageViewCamera.startAnimation(cameraOutTA);
             mImageViewCamera.setVisibility(View.VISIBLE);
 
+            Point ivWith = new Point(basePoint.x + POIMenuImageView.getOffset(), basePoint.y - POIMenuImageView.getOffset());
             withOutTA.setStartOffset(20);
+            mImageViewivWith.setLocation(ivWith);
             mImageViewivWith.startAnimation(withOutTA);
             mImageViewivWith.setVisibility(View.VISIBLE);
 
             thoughtOutTA.setStartOffset(80);
+            Point ivThoughtPoint = new Point(basePoint.x + POIMenuImageView.RADIUS, basePoint.y );
+            mImageViewivThought.setLocation(ivThoughtPoint);
             mImageViewivThought.startAnimation(thoughtOutTA);
             mImageViewivThought.setVisibility(View.VISIBLE);
             isClockwise = false;
@@ -292,60 +300,25 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
         mImageViewCamera.setOnClickListener(this);
         mImageViewCamera.setAnimationCallBack(mIImageViewAnimationCallBack);
 
-        cameraOutTA = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
-            Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 40.0f,
-            Animation.RELATIVE_TO_SELF, 10.0f);
-        cameraOutTA.setDuration(mIntAnimationDuration);
-
-        cameraOutTA2 = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
-            Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 10f,
-            Animation.RELATIVE_TO_SELF, 0.0f);
-        cameraOutTA2.setDuration(100);
-
-
-        cameraInTA = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
-            Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f,
-            Animation.RELATIVE_TO_SELF, 240.0f + mIntInsHeight);
-        cameraInTA.setDuration(mIntAnimationDuration);
+        cameraOutTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.CameraOut1);
+        cameraOutTA2 = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.CameraOut2);
+        cameraInTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.CameraIn);
 
         mImageViewivWith = (POIMenuImageView)root.findViewById(R.id.ivWith);
         mImageViewivWith.setOnClickListener(this);
         mImageViewivWith.setAnimationCallBack(mIImageViewAnimationCallBack);
 
-        withOutTA = new TranslateAnimation(Animation.ABSOLUTE, -75f,
-            Animation.ABSOLUTE, 0.0f, Animation.ABSOLUTE, 225.0f,
-            Animation.ABSOLUTE, 10.0f);
-        withOutTA.setDuration(mIntAnimationDuration);
-
-        withOutTA2 = new TranslateAnimation(Animation.ABSOLUTE, 10.0f,
-            Animation.ABSOLUTE, 0.0f, Animation.ABSOLUTE, -10.0f,
-            Animation.ABSOLUTE, 0.0f);
-        withOutTA2.setDuration(100);
-
-        withInTA = new TranslateAnimation(Animation.ABSOLUTE, 0.0f,
-            Animation.ABSOLUTE, -75f, Animation.ABSOLUTE, 10.0f,
-            Animation.ABSOLUTE, 225.0f);
-        withInTA.setDuration(mIntAnimationDuration);
+        withOutTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.PlaceOut1);
+        withOutTA2 = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.PlaceOut2);
+        withInTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.PlaceIn);
 
         mImageViewivThought = (POIMenuImageView)root.findViewById(R.id.ivThought);
         mImageViewivThought.setOnClickListener(this);
         mImageViewivThought.setAnimationCallBack(mIImageViewAnimationCallBack);
 
-        thoughtOutTA = new TranslateAnimation(Animation.ABSOLUTE, -205f,
-            Animation.ABSOLUTE, -10.0f, Animation.ABSOLUTE, 70f,
-            Animation.ABSOLUTE, 10.0f);
-        thoughtOutTA.setDuration(mIntAnimationDuration);
-
-        thoughtOutTA2 = new TranslateAnimation(Animation.ABSOLUTE, 10.0f,
-            Animation.ABSOLUTE, 0.0f, Animation.ABSOLUTE, -10.0f,
-            Animation.ABSOLUTE, 0.0f);
-        thoughtOutTA2.setDuration(100);
-
-
-        thoughtInTA = new TranslateAnimation(Animation.ABSOLUTE, -10.0f,
-            Animation.ABSOLUTE, -205f, Animation.ABSOLUTE, 10.0f,
-            Animation.ABSOLUTE, 70f);
-        thoughtInTA.setDuration(mIntAnimationDuration);
+        thoughtOutTA =  AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.ThoughtOut1);
+        thoughtOutTA2 = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.ThoughtOut2);
+        thoughtInTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.ThoughtIn);
 
 
     }
@@ -403,5 +376,4 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
 
         }
     }
-
 }

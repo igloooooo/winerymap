@@ -12,6 +12,8 @@ import android.widget.ImageView;
 
 public class POIMenuImageView extends ImageView implements Animation.AnimationListener
 {
+    public static final Integer RADIUS = 200;
+
     private Animation mAnimation;
     private float degree = 0;
     private Canvas mCanvas;
@@ -154,5 +156,10 @@ public class POIMenuImageView extends ImageView implements Animation.AnimationLi
         void onEndAnimation(Animation animation, View v);
 
         void onRepeatAnimation(Animation animation, View v);
+    }
+
+    public static Integer getOffset()
+    {
+        return (int)Math.floor(Math.sqrt(RADIUS*RADIUS/2));
     }
 }
