@@ -7,8 +7,11 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
+import au.com.iglooit.winerymap.android.R;
 
 public class POIMenuImageView extends ImageView implements Animation.AnimationListener
 {
@@ -31,6 +34,7 @@ public class POIMenuImageView extends ImageView implements Animation.AnimationLi
     public POIMenuImageView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        setClickMenuListener();
     }
 
     @Override
@@ -158,8 +162,27 @@ public class POIMenuImageView extends ImageView implements Animation.AnimationLi
         void onRepeatAnimation(Animation animation, View v);
     }
 
+    public interface OnMenuClickCallBack
+    {
+        void onMenuClickCallBack(View view);
+    }
+
     public static Integer getOffset()
     {
         return (int)Math.floor(Math.sqrt(RADIUS*RADIUS/2));
     }
+
+    private void setClickMenuListener()
+    {
+        setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                startAnimation((AnimationSet)AnimationUtils.loadAnimation(
+                    view.getContext(), R.anim.scaleset));
+            }
+        });
+    }
+
 }

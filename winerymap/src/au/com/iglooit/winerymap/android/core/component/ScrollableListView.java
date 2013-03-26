@@ -33,7 +33,7 @@ public class ScrollableListView extends ListView implements OnScrollListener {
     private ProgressBar progressBar;
     private RotateAnimation animation;
     private RotateAnimation reverseAnimation;
-    // ���ڱ�֤startY��ֵ��һ�������touch�¼���ֻ����¼һ��
+
     private boolean isRecored;
     private int headContentWidth;
     private int headContentHeight;
@@ -117,7 +117,7 @@ public class ScrollableListView extends ListView implements OnScrollListener {
                     if (firstItemIndex == 0 && !isRecored) {
                         isRecored = true;
                         startY = (int) event.getY();
-                        Log.v(TAG, "��downʱ���¼��ǰλ�á�");
+                        Log.v(TAG, "pull down");
                     }
                     break;
 
@@ -131,14 +131,14 @@ public class ScrollableListView extends ListView implements OnScrollListener {
                             state = DONE;
                             changeHeaderViewByState();
 
-                            Log.v(TAG, "������ˢ��״̬����done״̬");
+                            Log.v(TAG, "pull to refresh done״̬");
                         }
                         if (state == RELEASE_To_REFRESH) {
                             state = REFRESHING;
                             changeHeaderViewByState();
                             onRefresh();
 
-                            Log.v(TAG, "���ɿ�ˢ��״̬����done״̬");
+                            Log.v(TAG, "RELEASE_To_REFRESH done״̬");
                         }
                     }
 
@@ -151,46 +151,33 @@ public class ScrollableListView extends ListView implements OnScrollListener {
                     int tempY = (int) event.getY();
 
                     if (!isRecored && firstItemIndex == 0) {
-                        Log.v(TAG, "��moveʱ���¼��λ��");
+                        Log.v(TAG, "ACTION_MOVE");
                         isRecored = true;
                         startY = tempY;
                     }
 
                     if (state != REFRESHING && isRecored && state != LOADING) {
-
-                        // ��֤������padding�Ĺ���У���ǰ��λ��һֱ����head����������б?����Ļ�Ļ����������Ƶ�ʱ���б��ͬʱ���й���
-
-                        // ��������ȥˢ����
                         if (state == RELEASE_To_REFRESH) {
-
                             setSelection(0);
-
-                            // �������ˣ��Ƶ�����Ļ�㹻�ڸ�head�ĳ̶ȣ����ǻ�û���Ƶ�ȫ���ڸǵĵز�
                             if (((tempY - startY) / RATIO < headContentHeight)
                                     && (tempY - startY) > 0) {
                                 state = PULL_To_REFRESH;
                                 changeHeaderViewByState();
 
-                                Log.v(TAG, "���ɿ�ˢ��״̬ת�䵽����ˢ��״̬");
+                                Log.v(TAG, "RELEASE_To_REFRESH̬");
                             }
                             // һ�����Ƶ�����
                             else if (tempY - startY <= 0) {
                                 state = DONE;
                                 changeHeaderViewByState();
 
-                                Log.v(TAG, "���ɿ�ˢ��״̬ת�䵽done״̬");
+                                Log.v(TAG, "tempY - startY <=̬");
                             }
-                            // �������ˣ����߻�û�����Ƶ���Ļ�����ڸ�head�ĵز�
                             else {
-                                // ���ý����ر�Ĳ�����ֻ�ø���paddingTop��ֵ������
                             }
                         }
-                        // ��û�е�����ʾ�ɿ�ˢ�µ�ʱ��,DONE������PULL_To_REFRESH״̬
                         if (state == PULL_To_REFRESH) {
-
                             setSelection(0);
-
-                            // ���������Խ���RELEASE_TO_REFRESH��״̬
                             if ((tempY - startY) / RATIO >= headContentHeight) {
                                 state = RELEASE_To_REFRESH;
                                 isBack = true;
@@ -249,7 +236,7 @@ public class ScrollableListView extends ListView implements OnScrollListener {
                 arrowImageView.clearAnimation();
                 arrowImageView.startAnimation(animation);
 
-                tipsTextview.setText("�ɿ�ˢ��");
+                tipsTextview.setText("Release to refresh list");
 
                 Log.v(TAG, "��ǰ״̬���ɿ�ˢ��");
                 break;
@@ -259,15 +246,14 @@ public class ScrollableListView extends ListView implements OnScrollListener {
                 lastUpdatedTextView.setVisibility(View.VISIBLE);
                 arrowImageView.clearAnimation();
                 arrowImageView.setVisibility(View.VISIBLE);
-                // ����RELEASE_To_REFRESH״̬ת������
                 if (isBack) {
                     isBack = false;
                     arrowImageView.clearAnimation();
                     arrowImageView.startAnimation(reverseAnimation);
 
-                    tipsTextview.setText("����ˢ��");
+                    tipsTextview.setText("Pull down to refresh list");
                 } else {
-                    tipsTextview.setText("����ˢ��");
+                    tipsTextview.setText("Refresh");
                 }
                 Log.v(TAG, "��ǰ״̬������ˢ��");
                 break;
@@ -279,7 +265,7 @@ public class ScrollableListView extends ListView implements OnScrollListener {
                 progressBar.setVisibility(View.VISIBLE);
                 arrowImageView.clearAnimation();
                 arrowImageView.setVisibility(View.GONE);
-                tipsTextview.setText("����ˢ��...");
+                tipsTextview.setText("Loading...");
                 lastUpdatedTextView.setVisibility(View.VISIBLE);
 
                 Log.v(TAG, "��ǰ״̬,����ˢ��...");
@@ -290,7 +276,7 @@ public class ScrollableListView extends ListView implements OnScrollListener {
                 progressBar.setVisibility(View.GONE);
                 arrowImageView.clearAnimation();
                 arrowImageView.setImageResource(R.drawable.arrow);
-                tipsTextview.setText("����ˢ��");
+                tipsTextview.setText("Update finished");
                 lastUpdatedTextView.setVisibility(View.VISIBLE);
 
                 Log.v(TAG, "��ǰ״̬��done");
@@ -305,7 +291,7 @@ public class ScrollableListView extends ListView implements OnScrollListener {
 
     public void onRefreshComplete() {
         state = DONE;
-        lastUpdatedTextView.setText("������:" + new Date().toLocaleString());
+        lastUpdatedTextView.setText("Last updated:" + new Date().toLocaleString());
         changeHeaderViewByState();
     }
 
@@ -336,7 +322,7 @@ public class ScrollableListView extends ListView implements OnScrollListener {
     }
 
     public void setAdapter(BaseAdapter adapter) {
-        lastUpdatedTextView.setText("������:" + new Date().toLocaleString());
+        lastUpdatedTextView.setText("Last updated:" + new Date().toLocaleString());
         super.setAdapter(adapter);
     }
 

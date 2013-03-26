@@ -1,5 +1,6 @@
 package au.com.iglooit.winerymap.android.view.home;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,12 +14,10 @@ import android.widget.TextView;
 import au.com.iglooit.winerymap.android.R;
 import au.com.iglooit.winerymap.android.core.component.ScrollableListView;
 import au.com.iglooit.winerymap.android.dbhelper.WineryInfoHelper;
-import au.com.iglooit.winerymap.android.entity.WineryInfo;
 import com.androidquery.AQuery;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +32,7 @@ public class NewsFragment extends Fragment
 
     private List<String> data;
     private BaseAdapter adapter;
+    private Activity parentActivity;
 
     public static Fragment newInstance(Context context)
     {
@@ -62,6 +62,81 @@ public class NewsFragment extends Fragment
     }
 
     @Override
+    public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+        parentActivity = activity;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);    //To change body of overridden methods use File | Settings |
+        data = new ArrayList<String>();
+        data.add("a");
+        data.add("b");
+        data.add("c");
+
+        final ScrollableListView listView = (ScrollableListView)root.findViewById(R.id.resultList_news);
+        adapter = new BaseAdapter()
+        {
+            public View getView(int position, View convertView, ViewGroup parent)
+            {
+                TextView tv = new TextView(getActivity());
+                tv.setText(data.get(position));
+                return tv;
+            }
+
+            public long getItemId(int position)
+            {
+                return 0;
+            }
+
+            public Object getItem(int position)
+            {
+                return null;
+            }
+
+            public int getCount()
+            {
+                return data.size();
+            }
+        };
+        listView.setAdapter(adapter);
+
+        listView.setonRefreshListener(new ScrollableListView.OnRefreshListener()
+        {
+            public void onRefresh()
+            {
+                new AsyncTask<Void, Void, Void>()
+                {
+                    protected Void doInBackground(Void... params)
+                    {
+                        try
+                        {
+                            Thread.sleep(1000);
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                        data.add("new data after refresh");
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Void result)
+                    {
+                        adapter.notifyDataSetChanged();
+                        listView.onRefreshComplete();
+                    }
+
+                }.execute(null);
+            }
+        });
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
 
@@ -87,55 +162,6 @@ public class NewsFragment extends Fragment
 //            mFrom, mTo);
 //        mListView.setAdapter(mAdapter);
 
-        data = new ArrayList<String>();
-        data.add("a");
-        data.add("b");
-        data.add("c");
-
-        final ScrollableListView listView = (ScrollableListView)root.findViewById(R.id.resultList_news);
-        adapter = new BaseAdapter() {
-            public View getView(int position, View convertView, ViewGroup parent) {
-                TextView tv = new TextView(getActivity());
-                tv.setText(data.get(position));
-                return tv;
-            }
-
-            public long getItemId(int position) {
-                return 0;
-            }
-
-            public Object getItem(int position) {
-                return null;
-            }
-
-            public int getCount() {
-                return data.size();
-            }
-        };
-        listView.setAdapter(adapter);
-
-        listView.setonRefreshListener(new ScrollableListView.OnRefreshListener() {
-            public void onRefresh() {
-                new AsyncTask<Void, Void, Void>() {
-                    protected Void doInBackground(Void... params) {
-                        try {
-                            Thread.sleep(1000);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        data.add("new data after refresh");
-                        return null;
-                    }
-
-                    @Override
-                    protected void onPostExecute(Void result) {
-                        adapter.notifyDataSetChanged();
-                        listView.onRefreshComplete();
-                    }
-
-                }.execute(null);
-            }
-        });
 
         return root;
     }

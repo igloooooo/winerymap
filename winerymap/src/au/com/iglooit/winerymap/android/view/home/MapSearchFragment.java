@@ -11,7 +11,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +18,12 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
-import android.widget.RelativeLayout;
 import au.com.iglooit.winerymap.android.R;
+import au.com.iglooit.winerymap.android.core.component.map.IGTZoomControl;
+import au.com.iglooit.winerymap.android.core.component.map.NavigationUtil;
 import au.com.iglooit.winerymap.android.core.component.poimenu.AnimationFactory;
 import au.com.iglooit.winerymap.android.core.component.poimenu.MenuItemAnimationType;
 import au.com.iglooit.winerymap.android.core.component.poimenu.POIMenuImageView;
-import au.com.iglooit.winerymap.android.core.navigation.Direction;
-import au.com.iglooit.winerymap.android.core.navigation.Kit;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -36,7 +34,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.gson.Gson;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -52,39 +49,27 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
     private ProgressDialog progressDialog;
     private Activity parentActivity;
 
-    private POIMenuImageView mImageViewCamera;
-    private TranslateAnimation cameraOutTA;//
-    private TranslateAnimation cameraOutTA2;
-    private TranslateAnimation cameraInTA;
+    private POIMenuImageView addToMyFavourite;
+    private TranslateAnimation addToMyFavouriteOutTA;//
+    private TranslateAnimation addToMyFavouriteOutTA2;
+    private TranslateAnimation addToMyFavouriteInTA;
 
-    private POIMenuImageView mImageViewivWith;
-    private TranslateAnimation withOutTA;
-    private TranslateAnimation withOutTA2;
-    private TranslateAnimation withInTA;
+    private POIMenuImageView navigateTo;
+    private TranslateAnimation navigateToOutTA;
+    private TranslateAnimation navigateToOutTA2;
+    private TranslateAnimation navigateToInTA;
 
-    private POIMenuImageView mImageViewivThought;
-    private TranslateAnimation thoughtOutTA;
-    private TranslateAnimation thoughtOutTA2;
-    private TranslateAnimation thoughtInTA;
+    private POIMenuImageView showDetails;
+    private TranslateAnimation showDetailsOutTA;
+    private TranslateAnimation showDetailsOutTA2;
+    private TranslateAnimation showDetailsInTA;
 
-    private final int mIntDisApear = -1;
-    private final int mIntDoDraw = 1;// drawPaint
-    private boolean canHideClock = true;
-    private int mIntAnimationDuration = 200;
-
-    private int mIntInsWidth;
-    private int mIntInsHeight;
-    private ImageViewAnimationCallBack mIImageViewAnimationCallBack;
+    private ImageViewAnimationCallBack imageViewAnimationCallBack;
     private boolean isClockwise = true;
-    private AnimationSet mAnimationScaleAnimation;
+    private AnimationSet animationScaleAnimation;
     private Fragment searchBar;
 
     private ViewGroup root;
-
-    private final String URL = "http://maps.google.com/maps/api/directions/json?origin=" + HAMBURG
-        + "&destination=" + KIEL.toString()
-        + "&mode=driving"
-        + "&sensor=false";
 
     public static Fragment newInstance(Context context)
     {
@@ -133,16 +118,229 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
         }
     }
 
-    public void jsonCallback(String url, JSONObject json, AjaxStatus status)
+    private void setUpMap()
+    {
+        mMap.setOnMarkerClickListener(this);
+        Marker hamburg = mMap.addMarker(new MarkerOptions().position(HAMBURG)
+            .title("Hamburg"));
+        hamburg.hideInfoWindow();
+        Marker kiel = mMap.addMarker(new MarkerOptions()
+            .position(KIEL)
+            .title("Kiel")
+            .icon(BitmapDescriptorFactory
+                .fromResource(R.drawable.ic_launcher)));
+
+        LocationManager service = (LocationManager)this.getActivity().getSystemService(this.getActivity()
+            .LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        String provider = service.getBestProvider(criteria, false);
+        //            Location location = service.getLastKnownLocation(provider);
+        mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setZoomControlsEnabled(false);
+
+        // setup zoomcontrol
+        setUpZoomControl();
+
+        //Move the camera instantly to hamburg with a zoom of 15.
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(HAMBURG, 15));
+
+        // Zoom in, animating the camera.
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+
+        // get driction
+        aq.ajax(NavigationUtil.urlBuilder(HAMBURG, KIEL), JSONObject.class, this, "navigationCallback");
+        this.progressDialog = ProgressDialog.show(this.getActivity(), "Get navigation data . . .",
+            "performing HTTP request");
+
+        imageViewAnimationCallBack = new ImageViewAnimationCallBack();
+        animationScaleAnimation = (AnimationSet)AnimationUtils.loadAnimation(
+            parentActivity, R.anim.scaleset);
+        animationScaleAnimation.setAnimationListener(new Animation.AnimationListener()
+        {
+            @Override
+            public void onAnimationStart(Animation animation)
+            {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation)
+            {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation)
+            {
+
+            }
+        });
+    }
+
+    private void setUpZoomControl()
+    {
+        IGTZoomControl zoomControl = (IGTZoomControl)this.getActivity().findViewById(R.id.map_controller);
+        zoomControl.addListeners(new IGTZoomControl.IGTZoomControlListener()
+        {
+            @Override
+            public void onClickZoomIn(View view)
+            {
+                mMap.moveCamera(CameraUpdateFactory.zoomIn());
+            }
+
+            @Override
+            public void onClickZoomOut(View view)
+            {
+                mMap.moveCamera(CameraUpdateFactory.zoomOut());
+            }
+
+            @Override
+            public void onClickShowWinery(View view)
+            {
+
+            }
+        });
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker)
+    {
+        Point position = mMap.getProjection().toScreenLocation(marker.getPosition());
+        if (isClockwise)
+        {
+            Point basePoint = new Point(position.x, position.y + searchBar.getView().getHeight());
+
+
+            Point cameraPoint = new Point(basePoint.x, basePoint.y - POIMenuImageView.RADIUS);
+            addToMyFavourite.setLocation(cameraPoint);
+            addToMyFavourite.startAnimation(addToMyFavouriteOutTA);
+            addToMyFavourite.setVisibility(View.VISIBLE);
+
+            Point ivWith = new Point(basePoint.x + POIMenuImageView.getOffset(),
+                basePoint.y - POIMenuImageView.getOffset());
+            navigateToOutTA.setStartOffset(20);
+            navigateTo.setLocation(ivWith);
+            navigateTo.startAnimation(navigateToOutTA);
+            navigateTo.setVisibility(View.VISIBLE);
+
+            showDetailsOutTA.setStartOffset(80);
+            Point ivThoughtPoint = new Point(basePoint.x + POIMenuImageView.RADIUS, basePoint.y);
+            showDetails.setLocation(ivThoughtPoint);
+            showDetails.startAnimation(showDetailsOutTA);
+            showDetails.setVisibility(View.VISIBLE);
+            isClockwise = false;
+
+        }
+        else
+        {
+            showDetailsInTA.setStartOffset(20);
+            showDetails.startAnimation(showDetailsInTA);
+            showDetails.setVisibility(View.GONE);
+
+            navigateToInTA.setStartOffset(80);
+            navigateTo.startAnimation(navigateToInTA);
+            navigateTo.setVisibility(View.GONE);
+
+            addToMyFavouriteInTA.setStartOffset(100);
+            addToMyFavourite.startAnimation(addToMyFavouriteInTA);
+            addToMyFavourite.setVisibility(View.GONE);
+            isClockwise = true;
+        }
+        return true;
+    }
+
+    private void initAnimationView()
+    {
+        addToMyFavourite = (POIMenuImageView)root.findViewById(R.id.ivCamera);
+//        addToMyFavourite.setOnClickListener(this);
+        addToMyFavourite.setAnimationCallBack(imageViewAnimationCallBack);
+
+        addToMyFavouriteOutTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.CameraOut1);
+        addToMyFavouriteOutTA2 = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.CameraOut2);
+        addToMyFavouriteInTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.CameraIn);
+
+        navigateTo = (POIMenuImageView)root.findViewById(R.id.ivWith);
+//        navigateTo.setOnClickListener(this);
+        navigateTo.setAnimationCallBack(imageViewAnimationCallBack);
+
+        navigateToOutTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.PlaceOut1);
+        navigateToOutTA2 = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.PlaceOut2);
+        navigateToInTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.PlaceIn);
+
+        showDetails = (POIMenuImageView)root.findViewById(R.id.ivThought);
+//        showDetails.setOnClickListener(this);
+        showDetails.setAnimationCallBack(imageViewAnimationCallBack);
+
+        showDetailsOutTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.ThoughtOut1);
+        showDetailsOutTA2 = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.ThoughtOut2);
+        showDetailsInTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.ThoughtIn);
+    }
+
+    class ImageViewAnimationCallBack implements POIMenuImageView.AnimationCallBack
+    {
+        @Override
+        public void onStartAnimation(Animation animation, View v)
+        {
+        }
+
+        @Override
+        public void onEndAnimation(Animation animation, View v)
+        {
+            if (animation.equals(addToMyFavouriteOutTA))
+            {
+                Log.i(tag, "addToMyFavouriteOutTA");
+                addToMyFavourite.startAnimation2(addToMyFavouriteOutTA2, 10);
+            }
+            else if (animation.equals(navigateToOutTA))
+            {
+                Log.i(tag, "navigateToOutTA");
+                navigateTo.startAnimation2(navigateToOutTA2, 0);
+            }
+            else if (animation.equals(showDetailsOutTA))
+            {
+                Log.i(tag, "showDetailsOutTA");
+                showDetails.startAnimation2(showDetailsOutTA2, 0);
+            }
+            else
+            {
+                Log.i(tag, animation.toString());
+                Log.i(tag, v.toString());
+            }
+        }
+
+        @Override
+        public void onRepeatAnimation(Animation animation, View v)
+        {
+        }
+
+    }
+
+    @Override
+    public void onClick(View v)
+    {
+//        switch (v.getId())
+//        {
+//            case R.id.ivCamera:
+//                addToMyFavourite.startAnimation(animationScaleAnimation);
+//                break;
+//            case R.id.ivWith:
+//                navigateTo.startAnimation(animationScaleAnimation);
+//                break;
+//            case R.id.ivThought:
+//                showDetails.startAnimation(animationScaleAnimation);
+//                break;
+//
+//        }
+    }
+
+    public void navigationCallback(String url, JSONObject json, AjaxStatus status)
     {
 
         if (json != null)
         {
-            Gson gson = new Gson();
-            Direction direction = gson.fromJson(json.toString(), Direction.class);
-            if (direction.getStatus().equals("OK"))
+            List<LatLng> path = NavigationUtil.convertToPath(json);
+            if (path.size() > 0)
             {
-                List<LatLng> path = Kit.decodePoly2(direction.getRoutes().get(0).getOverview_polyline().getPoints());
                 mMap.addPolyline((new PolylineOptions())
                     .add(path.toArray(new LatLng[path.size()]))
                     .width(5)
@@ -156,224 +354,5 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
         }
         progressDialog.dismiss();
 
-    }
-
-    private void setUpMap()
-    {
-        mMap.setOnMarkerClickListener(this);
-        Marker hamburg = mMap.addMarker(new MarkerOptions().position(HAMBURG)
-            .title("Hamburg"));
-        hamburg.hideInfoWindow();
-        Marker kiel = mMap.addMarker(new MarkerOptions()
-            .position(KIEL)
-            .title("Kiel")
-            .snippet("Kiel is cool")
-            .icon(BitmapDescriptorFactory
-                .fromResource(R.drawable.ic_launcher)));
-
-        LocationManager service = (LocationManager)this.getActivity().getSystemService(this.getActivity()
-            .LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        String provider = service.getBestProvider(criteria, false);
-        //            Location location = service.getLastKnownLocation(provider);
-        mMap.setMyLocationEnabled(true);
-
-        // change button position
-        // Find ZoomControl view
-        SupportMapFragment mapFragment = (SupportMapFragment)getFragmentManager().findFragmentById(R.id.map);
-        View zoomControls = mapFragment.getView().findViewById(0x1);
-
-        if (zoomControls != null && zoomControls.getLayoutParams() instanceof RelativeLayout.LayoutParams)
-        {
-            // ZoomControl is inside of RelativeLayout
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)zoomControls.getLayoutParams();
-
-            // Align it to - parent top|left
-            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-
-            // Update margins, set to 10dp
-            final int margin = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10,
-                getResources().getDisplayMetrics());
-            params.setMargins(margin, margin, margin, margin);
-        }
-
-        //Move the camera instantly to hamburg with a zoom of 15.
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(HAMBURG, 15));
-
-        // Zoom in, animating the camera.
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
-
-        // get driction
-        aq.ajax(urlBuilder(HAMBURG, KIEL), JSONObject.class, this, "jsonCallback");
-        this.progressDialog = ProgressDialog.show(this.getActivity(), "working . . .", "performing HTTP request");
-
-        mIImageViewAnimationCallBack = new ImageViewAnimationCallBack();
-        mAnimationScaleAnimation = (AnimationSet)AnimationUtils.loadAnimation(
-            parentActivity, R.anim.scaleset);
-    }
-
-    private String urlBuilder(LatLng startPosition, LatLng destination)
-    {
-        StringBuilder builder = new StringBuilder("http://maps.google.com/maps/api/directions/json?origin=");
-        builder.append(convertToParam(startPosition));
-        builder.append("&destination=");
-        builder.append(convertToParam(destination));
-        builder.append("&mode=driving");
-        builder.append("&sensor=false");
-        return builder.toString();
-    }
-
-    private String convertToParam(LatLng position)
-    {
-        return "(" + position.latitude + "," + position.longitude + ")";
-    }
-
-    @Override
-    public boolean onMarkerClick(Marker marker)
-    {
-        Point position = mMap.getProjection().toScreenLocation(marker.getPosition());
-        if (isClockwise)
-        {
-            Point basePoint = new Point(position.x, position.y + searchBar.getView().getHeight());
-            // parent position?
-            cameraOutTA = new TranslateAnimation(0, 0, POIMenuImageView.RADIUS, 20);
-            cameraOutTA.setDuration(mIntAnimationDuration);
-
-            cameraOutTA2 = new TranslateAnimation(0, 0, 20, 0);
-            cameraOutTA2.setDuration(100);
-
-
-            cameraInTA = new TranslateAnimation(0, 0, 0, POIMenuImageView.RADIUS);
-            cameraInTA.setDuration(mIntAnimationDuration);
-
-            Point cameraPoint = new Point(basePoint.x, basePoint.y - POIMenuImageView.RADIUS);
-            mImageViewCamera.setLocation(cameraPoint);
-            mImageViewCamera.startAnimation(cameraOutTA);
-            mImageViewCamera.setVisibility(View.VISIBLE);
-
-            Point ivWith = new Point(basePoint.x + POIMenuImageView.getOffset(), basePoint.y - POIMenuImageView.getOffset());
-            withOutTA.setStartOffset(20);
-            mImageViewivWith.setLocation(ivWith);
-            mImageViewivWith.startAnimation(withOutTA);
-            mImageViewivWith.setVisibility(View.VISIBLE);
-
-            thoughtOutTA.setStartOffset(80);
-            Point ivThoughtPoint = new Point(basePoint.x + POIMenuImageView.RADIUS, basePoint.y );
-            mImageViewivThought.setLocation(ivThoughtPoint);
-            mImageViewivThought.startAnimation(thoughtOutTA);
-            mImageViewivThought.setVisibility(View.VISIBLE);
-            isClockwise = false;
-
-        }
-        else
-        {
-            thoughtInTA.setStartOffset(20);
-            mImageViewivThought.startAnimation(thoughtInTA);
-            mImageViewivThought.setVisibility(View.GONE);
-
-            withInTA.setStartOffset(80);
-            mImageViewivWith.startAnimation(withInTA);
-            mImageViewivWith.setVisibility(View.GONE);
-
-            cameraInTA.setStartOffset(100);
-            mImageViewCamera.startAnimation(cameraInTA);
-            mImageViewCamera.setVisibility(View.GONE);
-            isClockwise = true;
-        }
-        return true;
-    }
-
-    private void initAnimationView()
-    {
-
-        // am = new RotateAnimation ( 0, 360, 13, 13 );
-
-        Drawable dm = getResources().getDrawable(R.drawable.composer_camera);
-
-        mIntInsHeight = dm.getIntrinsicHeight();
-        mIntInsWidth = dm.getIntrinsicWidth();
-
-        // float flexOffset=5.0f;
-
-        mImageViewCamera = (POIMenuImageView)root.findViewById(R.id.ivCamera);
-        mImageViewCamera.setOnClickListener(this);
-        mImageViewCamera.setAnimationCallBack(mIImageViewAnimationCallBack);
-
-        cameraOutTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.CameraOut1);
-        cameraOutTA2 = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.CameraOut2);
-        cameraInTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.CameraIn);
-
-        mImageViewivWith = (POIMenuImageView)root.findViewById(R.id.ivWith);
-        mImageViewivWith.setOnClickListener(this);
-        mImageViewivWith.setAnimationCallBack(mIImageViewAnimationCallBack);
-
-        withOutTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.PlaceOut1);
-        withOutTA2 = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.PlaceOut2);
-        withInTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.PlaceIn);
-
-        mImageViewivThought = (POIMenuImageView)root.findViewById(R.id.ivThought);
-        mImageViewivThought.setOnClickListener(this);
-        mImageViewivThought.setAnimationCallBack(mIImageViewAnimationCallBack);
-
-        thoughtOutTA =  AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.ThoughtOut1);
-        thoughtOutTA2 = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.ThoughtOut2);
-        thoughtInTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.ThoughtIn);
-
-
-    }
-
-    class ImageViewAnimationCallBack implements POIMenuImageView.AnimationCallBack
-    {
-        @Override
-        public void onStartAnimation(Animation animation, View v)
-        {
-        }
-
-        @Override
-        public void onEndAnimation(Animation animation, View v)
-        {
-            if (animation.equals(cameraOutTA))
-            {
-                Log.i(tag, "cameraOutTA");
-                mImageViewCamera.startAnimation2(cameraOutTA2, 10);
-            }
-            if (animation.equals(withOutTA))
-            {
-                Log.i(tag, "withOutTA");
-                mImageViewivWith.startAnimation2(withOutTA2, 0);
-            }
-            if (animation.equals(thoughtOutTA))
-            {
-                Log.i(tag, "thoughtOutTA");
-                mImageViewivThought.startAnimation2(thoughtOutTA2, 0);
-
-            }
-
-        }
-
-        @Override
-        public void onRepeatAnimation(Animation animation, View v)
-        {
-        }
-
-    }
-
-    @Override
-    public void onClick(View v)
-    {
-        switch (v.getId())
-        {
-            case R.id.ivCamera:
-                mImageViewCamera.startAnimation(mAnimationScaleAnimation);
-                break;
-            case R.id.ivWith:
-                mImageViewivWith.startAnimation(mAnimationScaleAnimation);
-                break;
-            case R.id.ivThought:
-                mImageViewivThought.startAnimation(mAnimationScaleAnimation);
-                break;
-
-        }
     }
 }
