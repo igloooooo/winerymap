@@ -67,26 +67,26 @@ public class POIMenu extends RelativeLayout
     {
         imageViewAnimationCallBack = new ImageViewAnimationCallBack();
 
-        addToMyFavourite = (POIMenuImageView)findViewById(R.id.ivCamera);
+        addToMyFavourite = (POIMenuImageView)findViewById(R.id.add_my_favourite_img);
         addToMyFavourite.setAnimationCallBack(imageViewAnimationCallBack);
 
-        addToMyFavouriteOutTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.CameraOut1);
-        addToMyFavouriteOutTA2 = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.CameraOut2);
-        addToMyFavouriteInTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.CameraIn);
+        addToMyFavouriteOutTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.AddToMyFavouriteOut1);
+        addToMyFavouriteOutTA2 = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.AddToMyFavouriteOut2);
+        addToMyFavouriteInTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.AddToMyFavouriteIn);
 
-        navigateTo = (POIMenuImageView)findViewById(R.id.ivWith);
+        navigateTo = (POIMenuImageView)findViewById(R.id.navigate_to_img);
         navigateTo.setAnimationCallBack(imageViewAnimationCallBack);
 
-        navigateToOutTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.PlaceOut1);
-        navigateToOutTA2 = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.PlaceOut2);
-        navigateToInTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.PlaceIn);
+        navigateToOutTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.NavigateToOut1);
+        navigateToOutTA2 = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.NavigateToOut2);
+        navigateToInTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.NavigateToIn);
 
-        showDetails = (POIMenuImageView)findViewById(R.id.ivThought);
+        showDetails = (POIMenuImageView)findViewById(R.id.show_details_img);
         showDetails.setAnimationCallBack(imageViewAnimationCallBack);
 
-        showDetailsOutTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.ThoughtOut1);
-        showDetailsOutTA2 = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.ThoughtOut2);
-        showDetailsInTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.ThoughtIn);
+        showDetailsOutTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.ShowDetailsOut1);
+        showDetailsOutTA2 = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.ShowDetailsOut2);
+        showDetailsInTA = AnimationFactory.newInstance().getAnimation(MenuItemAnimationType.ShowDetailsIn);
     }
 
     class ImageViewAnimationCallBack implements POIMenuImageView.AnimationCallBack

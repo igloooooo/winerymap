@@ -5,7 +5,7 @@
                 android:layout_height="match_parent">
 
     <au.com.iglooit.winerymap.android.core.component.poimenu.POIMenuImageView
-        android:id="@+id/ivCamera"
+        android:id="@+id/add_my_favourite_img"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -15,7 +15,7 @@
         android:clickable="true"/>
 
     <au.com.iglooit.winerymap.android.core.component.poimenu.POIMenuImageView
-        android:id="@+id/ivWith"
+        android:id="@+id/navigate_to_img"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -27,7 +27,7 @@
         android:clickable="true"/>
 
     <au.com.iglooit.winerymap.android.core.component.poimenu.POIMenuImageView
-        android:id="@+id/ivThought"
+        android:id="@+id/show_details_img"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

@@ -2,7 +2,7 @@ package au.com.iglooit.winerymap.android.core.component.poimenu;
 
 public enum MenuItemAnimationType
 {
-    CameraOut1,CameraOut2, CameraIn,
-    PlaceOut1, PlaceOut2, PlaceIn,
-    ThoughtOut1, ThoughtOut2, ThoughtIn
+    AddToMyFavouriteOut1, AddToMyFavouriteOut2, AddToMyFavouriteIn,
+    NavigateToOut1, NavigateToOut2, NavigateToIn,
+    ShowDetailsOut1, ShowDetailsOut2, ShowDetailsIn
 }

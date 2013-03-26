@@ -19,48 +19,15 @@
                 class="com.google.android.gms.maps.SupportMapFragment"/>
     </LinearLayout>
     <au.com.iglooit.winerymap.android.core.component.map.IGTZoomControl
-        android:id="@+id/map_controller"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        />
-    <RelativeLayout
+            android:id="@+id/map_controller"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            />
+    <au.com.iglooit.winerymap.android.core.component.poimenu.POIMenu
+            android:id="@+id/poi_menu"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
-
-        <au.com.iglooit.winerymap.android.core.component.poimenu.POIMenuImageView
-                android:id="@+id/ivCamera"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:scaleType="center"
-                android:src="@drawable/composer_camera"
-                android:visibility="invisible"
-                android:clickable="true"/>
-
-        <au.com.iglooit.winerymap.android.core.component.poimenu.POIMenuImageView
-                android:id="@+id/ivWith"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="25dp"
-                android:scaleType="center"
-                android:src="@drawable/composer_with"
-                android:visibility="invisible"
-                android:clickable="true"/>
-
-        <au.com.iglooit.winerymap.android.core.component.poimenu.POIMenuImageView
-                android:id="@+id/ivThought"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="200dp"
-                android:layout_marginLeft="55dp"
-                android:scaleType="center"
-                android:src="@drawable/composer_thought"
-                android:visibility="invisible"
-                android:clickable="true"/>
-    </RelativeLayout>
+    </au.com.iglooit.winerymap.android.core.component.poimenu.POIMenu>
 
 </RelativeLayout>

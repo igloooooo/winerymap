@@ -10,7 +10,7 @@ public class SearchBarAdapter extends SimpleCursorAdapter {
 
     private WineryInfoHelper dbHelper = null;
     private Context context;
-    // 查询字段
+    // query field
     private String queryField;
     public SearchBarAdapter(Context context, int layout, Cursor c,String from, int to) {
         super(context, layout, c, new String[] { from },new int[] { to });

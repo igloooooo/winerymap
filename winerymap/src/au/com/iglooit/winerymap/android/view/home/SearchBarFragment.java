@@ -89,7 +89,7 @@ public class SearchBarFragment extends Fragment
             {
                 if (listener != null)
                 {
-                    listener.onSearchButton();
+                    listener.onSearchButton(textView.getText().toString());
                 }
             }
         });
@@ -98,7 +98,7 @@ public class SearchBarFragment extends Fragment
 
     public interface SearchBarFragmentListener
     {
-        void onSearchButton();
+        void onSearchButton(String content);
 
         void onTextViewEnter(String content);
     }
