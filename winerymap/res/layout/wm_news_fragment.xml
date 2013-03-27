@@ -3,6 +3,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:background="@color/black">
+
+    <TextView
+        android:id="@+id/textView1"
+        style="@style/account_more_list_text"
+        android:text="@string/search_result_details"/>
+
+    <fragment
+        android:id="@+id/latest_news_list"
+        class="com.handmark.pulltorefresh.extras.listfragment.PullToRefreshListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 
 </LinearLayout>

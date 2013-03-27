@@ -4,7 +4,7 @@
     <string name="app_name">Winery Map</string>
     <string name="menu_net_update">TODO</string>
     <string name="menu_recommand_friend">TODO</string>
-    <string name="menu_submit_proposal">TODO</string>
+    <string name="my_favorite">Favorite</string>
     <string name="menu_help_information">TODO</string>
     <string name="menu_about">TODO</string>
 </resources>

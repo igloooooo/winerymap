@@ -16,12 +16,16 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 import au.com.iglooit.winerymap.android.core.component.ScrollLayout;
 import au.com.iglooit.winerymap.android.view.home.HomePageViewAdapter;
+import au.com.iglooit.winerymap.android.view.myfavorite.MyFavoriteActivity;
 import au.com.iglooit.winerymap.android.view.news.NewsActivity;
 import au.com.iglooit.winerymap.android.view.search.SearchWineryActivity;
 import com.androidquery.AQuery;
 
 import java.util.ArrayList;
 
+/**
+ * test for branch
+ */
 public class WineryMapHome extends FragmentActivity
 {
     public static final String TAG = null;
@@ -76,6 +80,7 @@ public class WineryMapHome extends FragmentActivity
         viewpage.setCurrentItem(0);
         aq.id(R.id.goto_search_page).clicked(this, "goToSearch");
         aq.id(R.id.goto_news_page).clicked(this, "goToNews");
+        aq.id(R.id.goto_my_favorite).clicked(this, "goToMyFavorite");
     }
 
     public class MyOnClickListener implements View.OnClickListener
@@ -153,6 +158,12 @@ public class WineryMapHome extends FragmentActivity
     public void goToNews(View view)
     {
         Intent searchIntent = new Intent(this, NewsActivity.class);
+        startActivity(searchIntent);
+    }
+
+    public void goToMyFavorite(View view)
+    {
+        Intent searchIntent = new Intent(this, MyFavoriteActivity.class);
         startActivity(searchIntent);
     }
 }

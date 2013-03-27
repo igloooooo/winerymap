@@ -9,4 +9,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         class="au.com.iglooit.winerymap.android.view.home.TitleBarFragment"/>
+    <fragment
+        android:id="@+id/latest_news_list"
+        class="com.handmark.pulltorefresh.extras.listfragment.PullToRefreshListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 </LinearLayout>
