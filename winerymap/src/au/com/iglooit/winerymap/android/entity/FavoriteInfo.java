@@ -5,21 +5,20 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import java.io.Serializable;
 
-@DatabaseTable(tableName = "Winery_Info_T")
-public class WineryInfo implements Serializable
-{
+/**
+ * winerymap
+ * User: Nicholas Zhu
+ * Date: 13-3-27
+ * Time: 8:11PM
+ */
+@DatabaseTable(tableName = "Favorite_Info_T")
+public class FavoriteInfo implements Serializable {
     @DatabaseField(columnName = "_id", generatedId = true)
     public int id;
-    @DatabaseField
-    public double lat;
-    @DatabaseField
-    public double lng;
-    @DatabaseField
-    public String keyValue;
-    @DatabaseField
-    public String title;
+    @DatabaseField(canBeNull = false, foreign = true)
+    public WineryInfo wineryInfo;
 
-    public WineryInfo()
+    public FavoriteInfo()
     {
 
     }
@@ -29,8 +28,7 @@ public class WineryInfo implements Serializable
     {
         StringBuilder builder = new StringBuilder();
         builder.append("Id is ").append(id);
-        builder.append("; Lat:").append(lat);
-        builder.append("; Lng:").append(lng);
+        builder.append("; winery id is ").append(wineryInfo.toString());
         return builder.toString();
     }
 }

@@ -28,20 +28,17 @@ import java.util.ArrayList;
  */
 public class WineryMapHome extends FragmentActivity
 {
-    public static final String TAG = null;
+    public static final String TAG = WineryMapHome.class.getSimpleName();
     /**
      * Called when the activity is first created.
      */
     private ScrollLayout scrollLayout;
     private ViewPager viewpage;
-    private LayoutInflater mInflater;
     private ArrayList<View> views;
-    private ImageView iv, message, main_mask_bg;
-    private RelativeLayout rl1, rl2;
+    private ImageView main_mask_bg;
+
     private MyOnClickListener myOnClickListener;
-    private boolean isOpen = false;
-    private FragmentManager manager = null;
-    private Context context = null;
+
     private HomePageViewAdapter homePageViewAdapter;
     private AQuery aq;
 
@@ -50,14 +47,12 @@ public class WineryMapHome extends FragmentActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.wm_home_layout);
-        context = WineryMapHome.this;
         aq = new AQuery(this);
         initView();
     }
 
     private void initView()
     {
-        mInflater = LayoutInflater.from(this);
         views = new ArrayList<View>();
         myOnClickListener = new MyOnClickListener();
 

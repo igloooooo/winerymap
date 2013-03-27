@@ -10,26 +10,26 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
-public class WineryInfoHelper extends DataHelper {
-
-    private Dao<WineryInfo, Integer> wineryDao = null;
+public final class WineryInfoHelper extends DataHelper {
 
     public static final String TITLE = "title";
+    private Dao<WineryInfo, Integer> wineryDao = null;
 
     public WineryInfoHelper(Context context) {
         super(context);
     }
 
-    public Dao<WineryInfo, Integer> getWineryDataDao() throws SQLException {
+    public final Dao<WineryInfo, Integer> getWineryDataDao() throws SQLException {
         if (wineryDao == null) {
             wineryDao = getDao(WineryInfo.class);
         }
         return wineryDao;
     }
 
-    public List<WineryInfo> findWineryByName(String name) {
+    public final List<WineryInfo> findWineryByName(final String name) {
         try {
             QueryBuilder qb = getWineryDataDao().queryBuilder();
             qb.where().like("title", name + "%");
@@ -39,7 +39,7 @@ public class WineryInfoHelper extends DataHelper {
         }
     }
 
-    public Cursor findWineryForSearch(String name) {
+    public final Cursor findWineryForSearch(final String name) {
         CloseableIterator<WineryInfo> iterator = null;
         Cursor cursor = null;
         try {
@@ -58,19 +58,33 @@ public class WineryInfoHelper extends DataHelper {
         return cursor;
     }
 
-    public WineryInfo findWineryById(int id)
-    {
+    public final WineryInfo findWineryById(final int id) {
         try {
             QueryBuilder qb = getWineryDataDao().queryBuilder();
             qb.where().eq("id", id);
             List<WineryInfo> result = qb.query();
-            if (result != null && result.size() > 0)
-            {
+            if (result != null && result.size() > 0) {
                 return result.get(0);
-            }
-            else
-            {
+            } else {
                 return null;
+            }
+        } catch (SQLException e) {
+            throw new AppX(e.getMessage());
+        } finally {
+
+        }
+    }
+
+    public final List<WineryInfo> findWineryByIds(int[] ids)
+    {
+        try {
+            QueryBuilder qb = getWineryDataDao().queryBuilder();
+            qb.where().in("id", ids);
+            List<WineryInfo> result = qb.query();
+            if (result != null && result.size() > 0) {
+                return result;
+            } else {
+                return new ArrayList<WineryInfo>();
             }
         } catch (SQLException e) {
             throw new AppX(e.getMessage());

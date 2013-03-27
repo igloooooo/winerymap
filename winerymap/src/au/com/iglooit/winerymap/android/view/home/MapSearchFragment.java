@@ -1,8 +1,10 @@
 package au.com.iglooit.winerymap.android.view.home;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Criteria;
@@ -118,6 +120,17 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
 
         // Zoom in, animating the camera.
         mMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+            @Override
+            public void onCameraChange(CameraPosition cameraPosition) {
+                if(!isMenuClosed)
+                {
+                    currentMarker = null;
+                    poiMenu.hideMenuItems();
+                    isMenuClosed = true;
+                }
+            }
+        });
 
         // get driction
 //        aq.ajax(NavigationUtil.urlBuilder(HAMBURG, KIEL), JSONObject.class, this, "navigationCallback");
@@ -147,26 +160,43 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
-
+        final Point position = mMap.getProjection().toScreenLocation(marker.getPosition());
         if (isMenuClosed) {
-            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
-                    CameraPosition.fromLatLngZoom(marker.getPosition(), 10)), new GoogleMap.CancelableCallback() {
-                @Override
-                public void onFinish() {
-                    currentMarker = marker;
-                    final Point position = mMap.getProjection().toScreenLocation(marker.getPosition());
-                    Point basePoint = new Point(position.x, position.y + searchBar.getView().getHeight());
-                    poiMenu.showMenuItems(basePoint);
-                }
+            if (mMap.getCameraPosition().target.latitude != marker.getPosition().latitude
+                && mMap.getCameraPosition().target.longitude != marker.getPosition().longitude)
+            {
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
+                        CameraPosition.fromLatLngZoom(marker.getPosition(), 10)), new GoogleMap.CancelableCallback() {
+                    @Override
+                    public void onFinish() {
+                        currentMarker = marker;
+                        getActivity().runOnUiThread(new Runnable()
+                        {
+                            public void run()
+                            {
+                                Point basePoint = new Point(position.x, position.y + searchBar.getView().getHeight());
+                                poiMenu.showMenuItems(basePoint);
+                                isMenuClosed = false;
+                            }
+                        });
+                    }
 
-                @Override
-                public void onCancel() {
-                    //To change body of implemented methods use File | Settings | File Templates.
-                }
-            });
-            isMenuClosed = false;
+                    @Override
+                    public void onCancel() {
+                    }
+                });
+            }
+            else
+            {
+                Point basePoint = new Point(position.x, position.y + searchBar.getView().getHeight());
+                poiMenu.showMenuItems(basePoint);
+                isMenuClosed = false;
+            }
+
+
 
         } else {
+            currentMarker = null;
             poiMenu.hideMenuItems();
             isMenuClosed = true;
         }
@@ -176,10 +206,10 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
     @Override
     public void onClick(View v) {
         if (!(v instanceof POIMenuImageView)) {
-            if (isMenuClosed == false) {
-                poiMenu.hideMenuItems();
-                isMenuClosed = true;
-            }
+//            if (isMenuClosed == false) {
+//                poiMenu.hideMenuItems();
+//                isMenuClosed = true;
+//            }
         }
     }
 
@@ -210,7 +240,23 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
 
             @Override
             public void onAddToMyFavourite(View v) {
-                //To change body of implemented methods use File | Settings | File Templates.
+                if (currentMarker != null) {
+                    new AlertDialog.Builder(MapSearchFragment.this.getActivity()).setIcon(
+                            R.drawable.main_about_normal).setTitle("Add into favorite")
+                            .setMessage("The winery will be added into favorite").setNegativeButton("I'm sure.",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            }).setPositiveButton("No",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+
+                                }
+                            }).show();
+                } else {
+
+                }
             }
 
             @Override
