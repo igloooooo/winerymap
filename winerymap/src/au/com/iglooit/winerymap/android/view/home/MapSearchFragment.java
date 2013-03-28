@@ -18,27 +18,36 @@ import au.com.iglooit.winerymap.android.R;
 import au.com.iglooit.winerymap.android.core.component.map.IGTZoomControl;
 import au.com.iglooit.winerymap.android.core.component.map.NavigationUtil;
 import au.com.iglooit.winerymap.android.core.component.poimenu.POIMenu;
-import au.com.iglooit.winerymap.android.core.component.poimenu.POIMenuImageView;
-import au.com.iglooit.winerymap.android.dbhelper.WineryInfoHelper;
+import au.com.iglooit.winerymap.android.dbhelper.DataHelper;
+import au.com.iglooit.winerymap.android.dbhelper.FavoriteInfoHelper;
+import au.com.iglooit.winerymap.android.entity.FavoriteInfo;
 import au.com.iglooit.winerymap.android.entity.WineryInfo;
+import au.com.iglooit.winerymap.android.service.FavoriteInfoService;
+import au.com.iglooit.winerymap.android.service.FavoriteInfoServiceImpl;
+import au.com.iglooit.winerymap.android.service.WineryInfoService;
+import au.com.iglooit.winerymap.android.service.WineryInfoServiceImpl;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.*;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerClickListener, View.OnClickListener {
+public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerClickListener, View.OnClickListener
+{
     static final LatLng HAMBURG = new LatLng(53.558, 9.927);
     static final LatLng KIEL = new LatLng(53.551, 9.993);
     private String tag = "MapSearchFragment";
-    private WineryInfoHelper databaseHelper = null;
+    private DataHelper dataHelper = null;
     private GoogleMap mMap;
     private AQuery aq;
     private ProgressDialog progressDialog;
@@ -48,52 +57,70 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
     private POIMenu poiMenu;
     private ViewGroup root;
     private Marker currentMarker;
-    private Map<Marker, WineryInfo> resultMap = new HashMap<Marker, WineryInfo>();
+    private HashMap<Marker, WineryInfo> markerMap = new HashMap<Marker, WineryInfo>();
+    private WineryInfoService wineryInfoService;
+    private FavoriteInfoService favoriteInfoService;
 
-    public static Fragment newInstance(Context context) {
+    public static Fragment newInstance(Context context)
+    {
         MapSearchFragment f = new MapSearchFragment();
         return f;
     }
 
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(Activity activity)
+    {
         super.onAttach(activity);
         parentActivity = activity;
     }
 
     @Override
-    public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
-        root = (ViewGroup) layoutInflater.inflate(R.layout.wm_home_map_search_fragment, viewGroup, false);
+    public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle)
+    {
+        root = (ViewGroup)layoutInflater.inflate(R.layout.wm_home_map_search_fragment, viewGroup, false);
         aq = new AQuery(root);
         return root;
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
         super.onActivityCreated(savedInstanceState);    //To change body of overridden methods use File | Settings |
-        searchBar = (SearchBarFragment) this.getActivity().getSupportFragmentManager().findFragmentById(R.id.searchBar);
-        poiMenu = (POIMenu) this.getActivity().findViewById(R.id.poi_menu);
+        searchBar = (SearchBarFragment)this.getActivity().getSupportFragmentManager().findFragmentById(R.id.searchBar);
+        poiMenu = (POIMenu)this.getActivity().findViewById(R.id.poi_menu);
         // File Templates.
         setUpMapIfNeeded();
         setUpMenu();
         setUpSearchBar();
+        initDao();
     }
 
-    private void setUpMapIfNeeded() {
+    private void initDao()
+    {
+        wineryInfoService = new WineryInfoServiceImpl(getDataHelper().getWineryInfoDao());
+        favoriteInfoService = new FavoriteInfoServiceImpl(getDataHelper().getFavoriteInfoDao());
+
+    }
+
+    private void setUpMapIfNeeded()
+    {
         // Do a null check to confirm that we have not already instantiated the mMap.
-        if (mMap == null) {
+        if (mMap == null)
+        {
             // Try to obtain the mMap from the SupportMapFragment.
-            mMap = ((SupportMapFragment) this.getActivity().getSupportFragmentManager().findFragmentById(R.id.map))
-                    .getMap();
+            mMap = ((SupportMapFragment)this.getActivity().getSupportFragmentManager().findFragmentById(R.id.map))
+                .getMap();
             // Check if we were successful in obtaining the mMap.
-            if (mMap != null) {
+            if (mMap != null)
+            {
                 setUpMap();
 //                initAnimationView();
             }
         }
     }
 
-    private void setUpMap() {
+    private void setUpMap()
+    {
         mMap.setOnMarkerClickListener(this);
 //        Marker hamburg = mMap.addMarker(new MarkerOptions().position(HAMBURG)
 //                .title("Hamburg"));
@@ -104,8 +131,8 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
 //                .icon(BitmapDescriptorFactory
 //                        .fromResource(R.drawable.ic_launcher)));
 
-        LocationManager service = (LocationManager) this.getActivity().getSystemService(this.getActivity()
-                .LOCATION_SERVICE);
+        LocationManager service = (LocationManager)this.getActivity().getSystemService(this.getActivity()
+            .LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         String provider = service.getBestProvider(criteria, false);
         //            Location location = service.getLastKnownLocation(provider);
@@ -120,10 +147,12 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
 
         // Zoom in, animating the camera.
         mMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
-        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener()
+        {
             @Override
-            public void onCameraChange(CameraPosition cameraPosition) {
-                if(!isMenuClosed)
+            public void onCameraChange(CameraPosition cameraPosition)
+            {
+                if (!isMenuClosed)
                 {
                     currentMarker = null;
                     poiMenu.hideMenuItems();
@@ -138,38 +167,47 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
 //                "performing HTTP request");
     }
 
-    private void setUpZoomControl() {
-        IGTZoomControl zoomControl = (IGTZoomControl) this.getActivity().findViewById(R.id.map_controller);
-        zoomControl.addListeners(new IGTZoomControl.IGTZoomControlListener() {
+    private void setUpZoomControl()
+    {
+        IGTZoomControl zoomControl = (IGTZoomControl)this.getActivity().findViewById(R.id.map_controller);
+        zoomControl.addListeners(new IGTZoomControl.IGTZoomControlListener()
+        {
             @Override
-            public void onClickZoomIn(View view) {
+            public void onClickZoomIn(View view)
+            {
                 mMap.moveCamera(CameraUpdateFactory.zoomIn());
             }
 
             @Override
-            public void onClickZoomOut(View view) {
+            public void onClickZoomOut(View view)
+            {
                 mMap.moveCamera(CameraUpdateFactory.zoomOut());
             }
 
             @Override
-            public void onClickShowWinery(View view) {
+            public void onClickShowWinery(View view)
+            {
 
             }
         });
     }
 
     @Override
-    public boolean onMarkerClick(final Marker marker) {
+    public boolean onMarkerClick(final Marker marker)
+    {
         final Point position = mMap.getProjection().toScreenLocation(marker.getPosition());
-        if (isMenuClosed) {
+        if (isMenuClosed)
+        {
+            currentMarker = marker;
             if (mMap.getCameraPosition().target.latitude != marker.getPosition().latitude
                 && mMap.getCameraPosition().target.longitude != marker.getPosition().longitude)
             {
                 mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
-                        CameraPosition.fromLatLngZoom(marker.getPosition(), 10)), new GoogleMap.CancelableCallback() {
+                    CameraPosition.fromLatLngZoom(marker.getPosition(), 10)), new GoogleMap.CancelableCallback()
+                {
                     @Override
-                    public void onFinish() {
-                        currentMarker = marker;
+                    public void onFinish()
+                    {
                         getActivity().runOnUiThread(new Runnable()
                         {
                             public void run()
@@ -182,7 +220,8 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
                     }
 
                     @Override
-                    public void onCancel() {
+                    public void onCancel()
+                    {
                     }
                 });
             }
@@ -194,8 +233,9 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
             }
 
 
-
-        } else {
+        }
+        else
+        {
             currentMarker = null;
             poiMenu.hideMenuItems();
             isMenuClosed = true;
@@ -204,103 +244,129 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
     }
 
     @Override
-    public void onClick(View v) {
-        if (!(v instanceof POIMenuImageView)) {
-//            if (isMenuClosed == false) {
-//                poiMenu.hideMenuItems();
-//                isMenuClosed = true;
-//            }
-        }
+    public void onClick(View v)
+    {
     }
 
-    public void navigationCallback(String url, JSONObject json, AjaxStatus status) {
+    public void navigationCallback(String url, JSONObject json, AjaxStatus status)
+    {
 
-        if (json != null) {
+        if (json != null)
+        {
             List<LatLng> path = NavigationUtil.convertToPath(json);
-            if (path.size() > 0) {
+            if (path.size() > 0)
+            {
                 mMap.addPolyline((new PolylineOptions())
-                        .add(path.toArray(new LatLng[path.size()]))
-                        .width(5)
-                        .color(Color.BLUE)
-                        .geodesic(true));
+                    .add(path.toArray(new LatLng[path.size()]))
+                    .width(5)
+                    .color(Color.BLUE)
+                    .geodesic(true));
             }
-        } else {
+        }
+        else
+        {
             //ajax error
         }
         progressDialog.dismiss();
 
     }
 
-    private void setUpMenu() {
-        poiMenu.clickMenuItemListener = new POIMenu.ClickMenuItemListener() {
+    private void setUpMenu()
+    {
+        poiMenu.clickMenuItemListener = new POIMenu.ClickMenuItemListener()
+        {
             @Override
-            public void onShowDetails(View v) {
+            public void onShowDetails(View v)
+            {
                 //To change body of implemented methods use File | Settings | File Templates.
             }
 
             @Override
-            public void onAddToMyFavourite(View v) {
-                if (currentMarker != null) {
+            public void onAddToMyFavourite(View v)
+            {
+                if (currentMarker != null)
+                {
                     new AlertDialog.Builder(MapSearchFragment.this.getActivity()).setIcon(
-                            R.drawable.main_about_normal).setTitle("Add into favorite")
-                            .setMessage("The winery will be added into favorite").setNegativeButton("I'm sure.",
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            }).setPositiveButton("No",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
+                        R.drawable.main_about_normal).setTitle("Add into favorite")
+                        .setMessage("The winery will be added into favorite").setNegativeButton("I'm sure.",
+                        new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                WineryInfo wineryInfo = markerMap.get(currentMarker);
+                                FavoriteInfo favoriteInfo = new FavoriteInfo();
+                                favoriteInfo.wineryInfo = wineryInfo;
+                                favoriteInfoService.create(favoriteInfo);
+                            }
+                        }).setPositiveButton("No",
+                        new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog, int whichButton)
+                            {
 
-                                }
-                            }).show();
-                } else {
+                            }
+                        }).show();
+                }
+                else
+                {
 
                 }
             }
 
             @Override
-            public void onNavigationTo(View v) {
+            public void onNavigationTo(View v)
+            {
                 //To change body of implemented methods use File | Settings | File Templates.
             }
         };
     }
 
-    private void setUpSearchBar() {
-        searchBar.listener = new SearchBarFragment.SearchBarFragmentListener() {
+    private void setUpSearchBar()
+    {
+        searchBar.listener = new SearchBarFragment.SearchBarFragmentListener()
+        {
             @Override
-            public void onSearchButton(String content) {
-                resultMap.clear();
-                List<WineryInfo> resultList = getDataHelper().findWineryByName(content);
-                if (resultList != null && resultList.size() > 0) {
+            public void onSearchButton(String content)
+            {
+                markerMap.clear();
+                List<WineryInfo> resultList = wineryInfoService.findWineryByName(content);
+                if (resultList != null && resultList.size() > 0)
+                {
                     WineryInfo info = resultList.get(0);
-                    Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(info.lat, info.lng)).title(info.title));
-                    resultMap.put(marker, info);
+                    Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(info.lat,
+                        info.lng)).title(info.title));
+                    markerMap.put(marker, info);
                 }
 
             }
 
             @Override
-            public void onTextViewEnter(String content) {
+            public void onTextViewEnter(String content)
+            {
                 //To change body of implemented methods use File | Settings | File Templates.
             }
         };
     }
 
-    private WineryInfoHelper getDataHelper() {
-        if (databaseHelper == null) {
-            databaseHelper =
-                    OpenHelperManager.getHelper(parentActivity, WineryInfoHelper.class);
+    private DataHelper getDataHelper()
+    {
+        if (dataHelper == null)
+        {
+            dataHelper =
+                OpenHelperManager.getHelper(parentActivity, DataHelper.class);
         }
-        return databaseHelper;
+        return dataHelper;
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy()
+    {
         super.onDestroy();
-        if (databaseHelper != null) {
+        if (dataHelper != null)
+        {
             OpenHelperManager.releaseHelper();
-            databaseHelper = null;
+            dataHelper = null;
         }
     }
 

@@ -11,8 +11,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 import au.com.iglooit.winerymap.android.R;
 import au.com.iglooit.winerymap.android.constants.ApplicationConstants;
+import au.com.iglooit.winerymap.android.dbhelper.DataHelper;
 import au.com.iglooit.winerymap.android.dbhelper.WineryInfoHelper;
 import au.com.iglooit.winerymap.android.entity.WineryInfo;
+import au.com.iglooit.winerymap.android.service.WineryInfoService;
+import au.com.iglooit.winerymap.android.service.WineryInfoServiceImpl;
 import au.com.iglooit.winerymap.android.view.home.SearchDetailsBarAdapter;
 import au.com.iglooit.winerymap.android.view.winerydetails.WineryDetailsActivity;
 import com.androidquery.AQuery;
@@ -31,7 +34,8 @@ public class SearchWineryActivity extends FragmentActivity
     private SearchDetailsBarAdapter mAdapter;
     private List<Map<String, Object>> mList;
     private String content;
-    private WineryInfoHelper databaseHelper = null;
+    private DataHelper databaseHelper = null;
+    private WineryInfoService wineryInfoService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -39,15 +43,16 @@ public class SearchWineryActivity extends FragmentActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.wm_search_winery_layout);
         aq = new AQuery(this);
+        wineryInfoService = new WineryInfoServiceImpl(getDataHelper().getWineryInfoDao());
         initContent();
     }
 
-    private WineryInfoHelper getDataHelper()
+    private DataHelper getDataHelper()
     {
         if (databaseHelper == null)
         {
             databaseHelper =
-                OpenHelperManager.getHelper(this, WineryInfoHelper.class);
+                OpenHelperManager.getHelper(this, DataHelper.class);
         }
         return databaseHelper;
     }
@@ -71,7 +76,7 @@ public class SearchWineryActivity extends FragmentActivity
         String[] mFrom = new String[]{"img", "title1", "title2", "time"};
         int[] mTo = new int[]{R.id.img, R.id.title1, R.id.title2, R.id.time};
         // get data from database
-        List<WineryInfo> resultList = getDataHelper().findWineryByName("This");
+        List<WineryInfo> resultList = wineryInfoService.findWineryByName("This");
 
         Map<String, Object> mMap = null;
 
@@ -129,7 +134,7 @@ public class SearchWineryActivity extends FragmentActivity
         {
             public void run()
             {
-                List<WineryInfo> resultList = getDataHelper().findWineryByName(content);
+                List<WineryInfo> resultList = wineryInfoService.findWineryByName(content);
                 Map<String, Object> mMap = null;
                 mList.clear();
                 for (WineryInfo info : resultList)
@@ -168,7 +173,7 @@ public class SearchWineryActivity extends FragmentActivity
         @Override
         protected Void doInBackground(Void... params)
         {
-            List<WineryInfo> resultList = getDataHelper().findWineryByName(content);
+            List<WineryInfo> resultList = wineryInfoService.findWineryByName(content);
             Map<String, Object> mMap = null;
             mList = new ArrayList<Map<String, Object>>();
             for (WineryInfo info : resultList)

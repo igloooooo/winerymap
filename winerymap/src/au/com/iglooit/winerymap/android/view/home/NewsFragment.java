@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import au.com.iglooit.winerymap.android.R;
+import au.com.iglooit.winerymap.android.dbhelper.DataHelper;
 import au.com.iglooit.winerymap.android.dbhelper.WineryInfoHelper;
 import com.androidquery.AQuery;
 import com.handmark.pulltorefresh.extras.listfragment.PullToRefreshListFragment;
@@ -25,7 +26,7 @@ import java.util.List;
 
 public class NewsFragment extends Fragment implements PullToRefreshBase.OnRefreshListener<ListView>
 {
-    private WineryInfoHelper databaseHelper = null;
+    private DataHelper databaseHelper = null;
     private ViewGroup root;
     AQuery aq;
 
@@ -45,12 +46,12 @@ public class NewsFragment extends Fragment implements PullToRefreshBase.OnRefres
         return f;
     }
 
-    private WineryInfoHelper getDataHelper()
+    private DataHelper getDataHelper()
     {
         if (databaseHelper == null)
         {
             databaseHelper =
-                OpenHelperManager.getHelper(this.getActivity(), WineryInfoHelper.class);
+                OpenHelperManager.getHelper(this.getActivity(), DataHelper.class);
         }
         return databaseHelper;
     }

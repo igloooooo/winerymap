@@ -67,14 +67,7 @@ public class MyFavoriteActivity extends FragmentActivity implements PullToRefres
         @Override
         protected String[] doInBackground(Void... params)
         {
-            // Simulates a background job.
-            try
-            {
-                Thread.sleep(4000);
-            }
-            catch (InterruptedException e)
-            {
-            }
+            // get favorite list
             return mStrings;
         }
 

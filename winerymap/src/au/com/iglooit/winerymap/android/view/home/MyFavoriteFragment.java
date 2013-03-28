@@ -7,13 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import au.com.iglooit.winerymap.android.R;
+import au.com.iglooit.winerymap.android.dbhelper.DataHelper;
 import au.com.iglooit.winerymap.android.dbhelper.WineryInfoHelper;
 import com.androidquery.AQuery;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 public class MyFavoriteFragment extends Fragment
 {
-    private WineryInfoHelper databaseHelper = null;
+    private DataHelper databaseHelper = null;
     private ViewGroup root;
     AQuery aq;
 
@@ -23,12 +24,12 @@ public class MyFavoriteFragment extends Fragment
         return f;
     }
 
-    private WineryInfoHelper getDataHelper()
+    private DataHelper getDataHelper()
     {
         if (databaseHelper == null)
         {
             databaseHelper =
-                OpenHelperManager.getHelper(this.getActivity(), WineryInfoHelper.class);
+                OpenHelperManager.getHelper(this.getActivity(), DataHelper.class);
         }
         return databaseHelper;
     }
