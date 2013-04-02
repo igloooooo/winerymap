@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:ptr="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
@@ -11,11 +10,5 @@
         android:id="@+id/textView1"
         style="@style/account_more_list_text"
         android:text="@string/search_result_details"/>
-
-    <com.handmark.pulltorefresh.library.PullToRefreshListView
-        android:id="@+id/latest_news_listview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        ptr:ptrHeaderBackground="@android:color/darker_gray" />
 
 </LinearLayout>

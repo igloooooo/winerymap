@@ -10,9 +10,9 @@
         android:layout_height="wrap_content"
         class="au.com.iglooit.winerymap.android.view.home.TitleBarFragment"/>
 
-    <au.com.iglooit.winerymap.android.core.component.ScrollableListView
-            android:id="@+id/resultList_news"
-            android:layout_height="fill_parent"
-            android:layout_width="fill_parent"/>
+    <au.com.iglooit.winerymap.android.core.component.listview.PullRefreshListView
+        android:id="@+id/latest_news_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

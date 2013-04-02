@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="release_refresh">Release to refresh</string>
+    <string name="pullup_refresh">More...</string>
+    <string name="pulldown_refresh">Pull down to Refresh</string>
+    <string name="last_modified">Last Update</string>
+    <string name="recently_modified">Latest Update</string>
+    <string name="refreshing">Loading...</string>
+
+</resources>
