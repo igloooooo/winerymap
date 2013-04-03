@@ -15,12 +15,13 @@ import au.com.iglooit.winerymap.android.R;
 import au.com.iglooit.winerymap.android.core.component.ScrollableListView;
 import au.com.iglooit.winerymap.android.core.component.listview.DataIniter;
 import au.com.iglooit.winerymap.android.core.component.listview.PullRefreshListView;
+import au.com.iglooit.winerymap.android.view.core.WMBaseFragmentActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class NewsActivity extends FragmentActivity implements PullRefreshListView.OnRefreshListener {
+public class NewsActivity extends WMBaseFragmentActivity implements PullRefreshListView.OnRefreshListener {
     private PullRefreshListView mRefreshListView;
     private List<Map<String, Object>> mDataSource;
     private listViewAdapter mAdapter;

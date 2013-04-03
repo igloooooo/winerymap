@@ -16,6 +16,7 @@ import au.com.iglooit.winerymap.android.dbhelper.WineryInfoHelper;
 import au.com.iglooit.winerymap.android.entity.WineryInfo;
 import au.com.iglooit.winerymap.android.service.WineryInfoService;
 import au.com.iglooit.winerymap.android.service.WineryInfoServiceImpl;
+import au.com.iglooit.winerymap.android.view.core.WMBaseFragmentActivity;
 import au.com.iglooit.winerymap.android.view.home.SearchDetailsBarAdapter;
 import au.com.iglooit.winerymap.android.view.winerydetails.WineryDetailsActivity;
 import com.androidquery.AQuery;
@@ -26,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SearchWineryActivity extends FragmentActivity
+public class SearchWineryActivity extends WMBaseFragmentActivity
 {
     private AQuery aq;
     private ProgressDialog progressDialog;
@@ -45,27 +46,6 @@ public class SearchWineryActivity extends FragmentActivity
         aq = new AQuery(this);
         wineryInfoService = new WineryInfoServiceImpl(getDataHelper().getWineryInfoDao());
         initContent();
-    }
-
-    private DataHelper getDataHelper()
-    {
-        if (databaseHelper == null)
-        {
-            databaseHelper =
-                OpenHelperManager.getHelper(this, DataHelper.class);
-        }
-        return databaseHelper;
-    }
-
-    @Override
-    public void onDestroy()
-    {
-        super.onDestroy();
-        if (databaseHelper != null)
-        {
-            OpenHelperManager.releaseHelper();
-            databaseHelper = null;
-        }
     }
 
     private void initContent()

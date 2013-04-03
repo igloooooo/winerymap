@@ -8,12 +8,13 @@ import au.com.iglooit.winerymap.android.R;
 import au.com.iglooit.winerymap.android.constants.ApplicationConstants;
 import au.com.iglooit.winerymap.android.entity.dto.WineryInfoDTO;
 import au.com.iglooit.winerymap.android.exception.AppX;
+import au.com.iglooit.winerymap.android.view.core.WMBaseFragmentActivity;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.google.gson.Gson;
 import org.json.JSONObject;
 
-public class WineryDetailsActivity extends FragmentActivity
+public class WineryDetailsActivity extends WMBaseFragmentActivity
 {
     private AQuery aq;
     private ProgressDialog progressDialog;

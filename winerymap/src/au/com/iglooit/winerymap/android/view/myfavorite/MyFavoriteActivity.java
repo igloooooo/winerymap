@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import au.com.iglooit.winerymap.android.R;
+import au.com.iglooit.winerymap.android.view.core.WMBaseFragmentActivity;
 import com.handmark.pulltorefresh.extras.listfragment.PullToRefreshListFragment;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
@@ -13,7 +14,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-public class MyFavoriteActivity extends FragmentActivity implements PullToRefreshBase.OnRefreshListener<ListView>
+public class MyFavoriteActivity extends WMBaseFragmentActivity implements PullToRefreshBase.OnRefreshListener<ListView>
 {
     private LinkedList<String> mListItems;
     private ArrayAdapter<String> mAdapter;

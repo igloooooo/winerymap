@@ -4,7 +4,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import au.com.iglooit.winerymap.android.core.LOG.LogConstants;
+import au.com.iglooit.winerymap.android.core.view.IIGTDataHelper;
 import au.com.iglooit.winerymap.android.entity.FavoriteInfo;
+import au.com.iglooit.winerymap.android.entity.WineryHistoryInfo;
 import au.com.iglooit.winerymap.android.entity.WineryInfo;
 import au.com.iglooit.winerymap.android.exception.AppX;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
@@ -15,7 +17,7 @@ import com.j256.ormlite.table.TableUtils;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-public class DataHelper extends OrmLiteSqliteOpenHelper
+public class DataHelper extends OrmLiteSqliteOpenHelper implements IIGTDataHelper
 {
 
 
@@ -23,6 +25,7 @@ public class DataHelper extends OrmLiteSqliteOpenHelper
     private static final int DATABASE_VERSION = 1;
     public static final String WINERY_INFO_DAO = "WINERY_INFO_DAO";
     public static final String FAVORITE_INFO_DAO = "FAVORITE_INFO_DAO";
+    public static final String WINERY_HISTORY_INFO_DAO = "WINERY_HISTORY_INFO_DAO";
     private HashMap<String, Dao> daoMaps = null;
 
 
@@ -37,6 +40,7 @@ public class DataHelper extends OrmLiteSqliteOpenHelper
         daoMaps = new HashMap<String, Dao>();
         daoMaps.put(WINERY_INFO_DAO, null);
         daoMaps.put(FAVORITE_INFO_DAO, null);
+        daoMaps.put(WINERY_HISTORY_INFO_DAO, null);
     }
 
     @Override
@@ -46,6 +50,7 @@ public class DataHelper extends OrmLiteSqliteOpenHelper
         {
             TableUtils.createTable(connectionSource, WineryInfo.class);
             TableUtils.createTable(connectionSource, FavoriteInfo.class);
+            TableUtils.createTable(connectionSource, WineryHistoryInfo.class);
             // insert init data
             db.beginTransaction();
             db.execSQL("INSERT INTO Winery_Info_T (lat, lng, keyValue, title) VALUES(53.558, 9.927,'try1'," +
@@ -153,5 +158,24 @@ public class DataHelper extends OrmLiteSqliteOpenHelper
             }
         }
         return favoriteInfoDao;
+    }
+
+    @SuppressWarnings("unchecked")
+    public final Dao<WineryHistoryInfo, Integer> getWineryHistoryInfoDao()
+    {
+        Dao<WineryHistoryInfo, Integer> wineryHistoryInfoDao = daoMaps.get(WINERY_HISTORY_INFO_DAO);
+        if (wineryHistoryInfoDao == null)
+        {
+            try
+            {
+                wineryHistoryInfoDao = getDao(WineryHistoryInfo.class);
+                daoMaps.put(FAVORITE_INFO_DAO, wineryHistoryInfoDao);
+            }
+            catch (SQLException e)
+            {
+                throw new AppX(e.getMessage());
+            }
+        }
+        return wineryHistoryInfoDao;
     }
 }
