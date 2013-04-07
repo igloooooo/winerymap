@@ -2,7 +2,6 @@ package au.com.iglooit.winerymap.android.view.myfavorite;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import au.com.iglooit.winerymap.android.R;

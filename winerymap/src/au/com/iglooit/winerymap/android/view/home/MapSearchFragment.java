@@ -19,7 +19,6 @@ import au.com.iglooit.winerymap.android.core.component.map.IGTZoomControl;
 import au.com.iglooit.winerymap.android.core.component.map.NavigationUtil;
 import au.com.iglooit.winerymap.android.core.component.poimenu.POIMenu;
 import au.com.iglooit.winerymap.android.dbhelper.DataHelper;
-import au.com.iglooit.winerymap.android.dbhelper.FavoriteInfoHelper;
 import au.com.iglooit.winerymap.android.entity.FavoriteInfo;
 import au.com.iglooit.winerymap.android.entity.WineryInfo;
 import au.com.iglooit.winerymap.android.service.FavoriteInfoService;
@@ -42,7 +41,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.List;
 
-public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerClickListener, View.OnClickListener
+public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerClickListener
 {
     static final LatLng HAMBURG = new LatLng(53.558, 9.927);
     static final LatLng KIEL = new LatLng(53.551, 9.993);
@@ -241,11 +240,6 @@ public class MapSearchFragment extends Fragment implements GoogleMap.OnMarkerCli
             isMenuClosed = true;
         }
         return true;
-    }
-
-    @Override
-    public void onClick(View v)
-    {
     }
 
     public void navigationCallback(String url, JSONObject json, AjaxStatus status)

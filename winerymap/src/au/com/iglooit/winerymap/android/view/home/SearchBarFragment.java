@@ -14,66 +14,54 @@ import au.com.iglooit.winerymap.android.dbhelper.DataHelper;
 import au.com.iglooit.winerymap.android.dbhelper.WineryInfoHelper;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
-public class SearchBarFragment extends Fragment
-{
-    private DataHelper databaseHelper = null;
+public class SearchBarFragment extends Fragment {
     public SearchBarFragmentListener listener;
+    private DataHelper databaseHelper = null;
     private AutoCompleteTextView textView;
     private Button searchButton;
 
-    public static Fragment newInstance(Context context)
-    {
+    public static Fragment newInstance(Context context) {
         SearchBarFragment f = new SearchBarFragment();
         return f;
     }
 
-    private DataHelper getDataHelper()
-    {
-        if (databaseHelper == null)
-        {
+    private DataHelper getDataHelper() {
+        if (databaseHelper == null) {
             databaseHelper =
-                OpenHelperManager.getHelper(this.getActivity(), DataHelper.class);
+                    OpenHelperManager.getHelper(this.getActivity(), DataHelper.class);
         }
         return databaseHelper;
     }
 
     @Override
-    public void onDestroy()
-    {
+    public void onDestroy() {
         super.onDestroy();
-        if (databaseHelper != null)
-        {
+        if (databaseHelper != null) {
             OpenHelperManager.releaseHelper();
             databaseHelper = null;
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        ViewGroup root = (ViewGroup)inflater.inflate(R.layout.wm_home_search_bar_fragment, null);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.wm_home_search_bar_fragment, null);
         SearchBarAdapter adapter = new SearchBarAdapter(root.getContext(), android.R.layout.simple_dropdown_item_1line,
-            null, WineryInfoHelper.TITLE, android.R.id.text1);
+                null, WineryInfoHelper.TITLE, android.R.id.text1);
         // two chars to fire searching
-        textView = (AutoCompleteTextView)root.findViewById(R.id.autoCompleteTextView1);
+        textView = (AutoCompleteTextView) root.findViewById(R.id.autoCompleteTextView1);
         textView.setThreshold(2);
         textView.setAdapter(adapter);
-        searchButton = (Button)root.findViewById(R.id.searchButton);
+        searchButton = (Button) root.findViewById(R.id.searchButton);
         setListeners();
         return root;
     }
 
-    private void setListeners()
-    {
-        textView.setOnKeyListener(new View.OnKeyListener()
-        {
+    private void setListeners() {
+        textView.setOnKeyListener(new View.OnKeyListener() {
             @Override
-            public boolean onKey(View view, int keyCode, KeyEvent keyEvent)
-            {
-                if (keyCode == KeyEvent.KEYCODE_ENTER)
-                {
-                    if (listener != null)
-                    {
+            public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    if (listener != null) {
                         listener.onTextViewEnter(textView.getText().toString());
                     }
                     return true;
@@ -82,13 +70,10 @@ public class SearchBarFragment extends Fragment
             }
         });
 
-        searchButton.setOnClickListener(new View.OnClickListener()
-        {
+        searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
-                if (listener != null)
-                {
+            public void onClick(View view) {
+                if (listener != null) {
                     listener.onSearchButton(textView.getText().toString());
                 }
             }
@@ -96,8 +81,7 @@ public class SearchBarFragment extends Fragment
 
     }
 
-    public interface SearchBarFragmentListener
-    {
+    public interface SearchBarFragmentListener {
         void onSearchButton(String content);
 
         void onTextViewEnter(String content);

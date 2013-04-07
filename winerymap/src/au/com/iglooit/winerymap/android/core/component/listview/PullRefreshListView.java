@@ -23,7 +23,7 @@ import au.com.iglooit.winerymap.android.R;
 public class PullRefreshListView extends ListView implements OnScrollListener {
 
 
-	/** 上拉刷新，下拉刷新控制变量 */
+	/** frag vars */
 	private final static int RELEASE_TO_REFRESH = 0;
 	private final static int PULL_TO_REFRESH = 1;
 	private final static int REFRESHING = 2;
@@ -165,7 +165,7 @@ public class PullRefreshListView extends ListView implements OnScrollListener {
 	}
 
 	/**
-	 * 初始化动画
+	 * init animation
 	 */
 	private void initAnimation() {
 		mAnimation = new RotateAnimation(0, -180,
