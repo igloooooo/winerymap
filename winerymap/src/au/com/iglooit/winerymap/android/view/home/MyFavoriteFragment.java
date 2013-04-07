@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import au.com.iglooit.winerymap.android.R;
 import au.com.iglooit.winerymap.android.dbhelper.DataHelper;
-import au.com.iglooit.winerymap.android.dbhelper.WineryInfoHelper;
 import com.androidquery.AQuery;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 

@@ -11,7 +11,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import au.com.iglooit.winerymap.android.R;
 import au.com.iglooit.winerymap.android.dbhelper.DataHelper;
-import au.com.iglooit.winerymap.android.dbhelper.WineryInfoHelper;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 public class SearchBarFragment extends Fragment {
