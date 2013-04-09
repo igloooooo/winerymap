@@ -45,7 +45,7 @@ public class SearchBarFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.wm_home_search_bar_fragment, null);
         SearchBarAdapter adapter = new SearchBarAdapter(root.getContext(), android.R.layout.simple_dropdown_item_1line,
-                null, WineryInfoHelper.TITLE, android.R.id.text1);
+                null, "title", android.R.id.text1);
         // two chars to fire searching
         textView = (AutoCompleteTextView) root.findViewById(R.id.autoCompleteTextView1);
         textView.setThreshold(2);

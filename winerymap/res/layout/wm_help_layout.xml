@@ -8,10 +8,6 @@
         android:id="@+id/title_bar_news"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:label="@string/history" />
-
-    <au.com.iglooit.winerymap.android.core.component.listview.PullRefreshListView
-        android:id="@+id/latest_history_listview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:label="@string/help" />
+        />
 </LinearLayout>

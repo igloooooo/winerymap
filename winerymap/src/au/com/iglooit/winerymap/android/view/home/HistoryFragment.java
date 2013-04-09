@@ -15,59 +15,26 @@ import android.widget.TextView;
 import au.com.iglooit.winerymap.android.R;
 import au.com.iglooit.winerymap.android.core.component.listview.DataIniter;
 import au.com.iglooit.winerymap.android.core.component.listview.PullRefreshListView;
-import au.com.iglooit.winerymap.android.dbhelper.DataHelper;
 import com.androidquery.AQuery;
-import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import java.util.List;
 import java.util.Map;
 
-public class NewsFragment extends Fragment implements PullRefreshListView.OnRefreshListener
+public class HistoryFragment extends Fragment implements PullRefreshListView.OnRefreshListener
 {
+    private Activity parentActivity;
+    private ViewGroup root;
+    private AQuery aq;
+
     private PullRefreshListView mRefreshListView;
     private List<Map<String, Object>> mDataSource;
     private listViewAdapter mAdapter;
     private int pageSize = 10;
 
-    private DataHelper databaseHelper = null;
-    private ViewGroup root;
-    AQuery aq;
-
-    //    private List<String> data;
-//    private BaseAdapter adapter;
-    private Activity parentActivity;
-//
-//    private LinkedList<String> mListItems;
-//    private ArrayAdapter<String> mAdapter;
-//
-//    private PullToRefreshListFragment mPullRefreshListFragment;
-//    private PullToRefreshListView mPullRefreshListView;
-
     public static Fragment newInstance(Context context)
     {
-        NewsFragment f = new NewsFragment();
+        HistoryFragment f = new HistoryFragment();
         return f;
-    }
-
-    private DataHelper getDataHelper()
-    {
-        if (databaseHelper == null)
-        {
-            databaseHelper =
-                OpenHelperManager.getHelper(this.getActivity(), DataHelper.class);
-        }
-        return databaseHelper;
-    }
-
-    @Override
-    public void onDestroy()
-    {
-        super.onDestroy();
-        if (databaseHelper != null)
-        {
-            OpenHelperManager.releaseHelper();
-            databaseHelper = null;
-        }
     }
 
     @Override
@@ -78,68 +45,28 @@ public class NewsFragment extends Fragment implements PullRefreshListView.OnRefr
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle)
     {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-
-        root = (ViewGroup)inflater.inflate(R.layout.wm_news_fragment, container, false);
+        root = (ViewGroup)layoutInflater.inflate(R.layout.wm_my_favorite_fragment, viewGroup, false);
         aq = new AQuery(root);
-//        initContent();
         return root;
     }
 
-//    @Override
-//    public void onRefresh(PullToRefreshBase<ListView> refreshView)
-//    {
-//        // Do work to refresh the list here.
-//        new GetDataTask().execute();
-//    }
-//
-//    private class GetDataTask extends AsyncTask<Void, Void, String[]>
-//    {
-//
-//        @Override
-//        protected String[] doInBackground(Void... params)
-//        {
-//            // Simulates a background job.
-//            try
-//            {
-//                Thread.sleep(4000);
-//            }
-//            catch (InterruptedException e)
-//            {
-//            }
-//            return mStrings;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String[] result)
-//        {
-//            mListItems.addFirst("Added after refresh...");
-//            mAdapter.notifyDataSetChanged();
-//
-//            // Call onRefreshComplete when the list has been refreshed.
-//            mPullRefreshListView.onRefreshComplete();
-//
-//            super.onPostExecute(result);
-//        }
-//    }
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);    //To change body of overridden methods use File | Settings |
+        initContent();
+    }
 
     private void initContent()
     {
-        mRefreshListView = (PullRefreshListView)root.findViewById(R.id.latest_news_listview);
+        mRefreshListView = (PullRefreshListView)this.getActivity().findViewById(R.id.my_favorite_listview);
         mDataSource = DataIniter.initValue(1, 15);
         mAdapter = new listViewAdapter();
         mRefreshListView.setAdapter(mAdapter);
         mRefreshListView.setonRefreshListener(this);
     }
-
-    private String[] mStrings = {"Abbaye de Belloc"};
 
     private class listViewAdapter extends BaseAdapter
     {
@@ -166,7 +93,7 @@ public class NewsFragment extends Fragment implements PullRefreshListView.OnRefr
         @Override
         public View getView(int position, View convertView, ViewGroup parent)
         {
-            View view = LayoutInflater.from(NewsFragment.this.getActivity()).inflate(
+            View view = LayoutInflater.from(HistoryFragment.this.getActivity()).inflate(
                 R.layout.wm_news_listview_item, null);
             TextView title = (TextView)view.findViewById(R.id.item_title);
             TextView text = (TextView)view.findViewById(R.id.item_subtext);

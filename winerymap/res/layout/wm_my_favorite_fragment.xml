@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:igt="http://schemas.android.com/apk/lib/au.com.iglooit.winerymap.android.view.home"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
-    <fragment class="au.com.iglooit.winerymap.android.view.home.TitleBarFragment"
+    <fragment
         android:id="@+id/title_bar_news"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:label="@string/history" />
+        class="au.com.iglooit.winerymap.android.view.home.TitleBarFragment"
+        igt:barTitle="@string/history"/>
 
     <au.com.iglooit.winerymap.android.core.component.listview.PullRefreshListView
-        android:id="@+id/latest_history_listview"
+        android:id="@+id/my_favorite_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </LinearLayout>

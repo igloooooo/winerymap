@@ -5,4 +5,7 @@
     <string name="search_text">Search</string>
     <string name="search_hit">Search</string>
     <string name="news">News</string>
+    <string name="myFavorite">My Favorite</string>
+    <string name="history">History</string>
+    <string name="help">Help</string>
 </resources>

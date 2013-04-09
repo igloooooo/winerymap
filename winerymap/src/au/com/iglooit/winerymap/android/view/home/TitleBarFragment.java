@@ -32,14 +32,14 @@ public class TitleBarFragment extends Fragment
     public void onInflate(Activity activity, AttributeSet attrs, Bundle savedInstanceState) {
         super.onInflate(activity, attrs, savedInstanceState);
         TypedArray a = activity.obtainStyledAttributes(attrs, R.styleable.TitleBarFragment);
-        title = a.getText(R.styleable.TitleBarFragment_barTitle);
+        title = a.getText(R.styleable.TitleBarFragment_android_label);
         a.recycle();
     }
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle)
     {
-        ViewGroup root = (ViewGroup)layoutInflater.inflate(R.layout.wm_home_title_bar_fragment, null);
+        ViewGroup root = (ViewGroup)layoutInflater.inflate(R.layout.wm_home_title_bar_fragment, viewGroup, false);
         aq = new AQuery(root);
         aq.id(R.id.goHomeButton).clicked(this, "onClickHomeButton");
         aq.id(R.id.titleText).text(title==null?"":title);

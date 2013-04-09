@@ -8,7 +8,8 @@
         android:id="@+id/searchBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        class="au.com.iglooit.winerymap.android.view.home.TitleBarFragment"/>
+        class="au.com.iglooit.winerymap.android.view.home.TitleBarFragment"
+        android:label="@string/myFavorite"/>
     <fragment
         android:id="@+id/latest_news_list"
         class="com.handmark.pulltorefresh.extras.listfragment.PullToRefreshListFragment"

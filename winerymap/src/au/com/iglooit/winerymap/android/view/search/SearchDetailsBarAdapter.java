@@ -1,4 +1,4 @@
-package au.com.iglooit.winerymap.android.view.home;
+package au.com.iglooit.winerymap.android.view.search;
 
 import android.content.Context;
 import android.view.View;

@@ -16,6 +16,7 @@ import au.com.iglooit.winerymap.android.core.component.ScrollableListView;
 import au.com.iglooit.winerymap.android.core.component.listview.DataIniter;
 import au.com.iglooit.winerymap.android.core.component.listview.PullRefreshListView;
 import au.com.iglooit.winerymap.android.view.core.WMBaseFragmentActivity;
+import com.androidquery.AQuery;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +27,13 @@ public class NewsActivity extends WMBaseFragmentActivity implements PullRefreshL
     private List<Map<String, Object>> mDataSource;
     private listViewAdapter mAdapter;
     private int pageSize = 10;
+    private AQuery aq;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.wm_news_layout);
+        aq = new AQuery(this);
         initContent();
     }
 

@@ -15,7 +15,6 @@ import au.com.iglooit.winerymap.android.entity.WineryInfo;
 import au.com.iglooit.winerymap.android.service.WineryInfoService;
 import au.com.iglooit.winerymap.android.service.WineryInfoServiceImpl;
 import au.com.iglooit.winerymap.android.view.core.WMBaseFragmentActivity;
-import au.com.iglooit.winerymap.android.view.home.SearchDetailsBarAdapter;
 import au.com.iglooit.winerymap.android.view.winerydetails.WineryDetailsActivity;
 import com.androidquery.AQuery;
 

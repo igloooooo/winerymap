@@ -8,7 +8,8 @@
         android:id="@+id/title_bar_news"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        class="au.com.iglooit.winerymap.android.view.home.TitleBarFragment"/>
+        class="au.com.iglooit.winerymap.android.view.home.TitleBarFragment"
+        android:label="@string/news"/>
 
     <au.com.iglooit.winerymap.android.core.component.listview.PullRefreshListView
         android:id="@+id/latest_news_listview"

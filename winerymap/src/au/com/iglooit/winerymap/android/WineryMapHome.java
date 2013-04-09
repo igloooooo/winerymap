@@ -1,20 +1,18 @@
 package au.com.iglooit.winerymap.android;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 import au.com.iglooit.winerymap.android.core.component.ScrollLayout;
+import au.com.iglooit.winerymap.android.view.help.HelpActivity;
+import au.com.iglooit.winerymap.android.view.history.HistoryActivity;
 import au.com.iglooit.winerymap.android.view.home.HomePageViewAdapter;
 import au.com.iglooit.winerymap.android.view.myfavorite.MyFavoriteActivity;
 import au.com.iglooit.winerymap.android.view.news.NewsActivity;
@@ -60,13 +58,6 @@ public class WineryMapHome extends FragmentActivity
 
         scrollLayout = (ScrollLayout)findViewById(R.id.scrollLayout);
 
-//        View view1 = mInflater.inflate(R.layout.wm_home_latest_search_details_page, null);
-//        View view2 = mInflater.inflate(R.layout.wm_home_map_search_page, null);
-//    		rl2 = (RelativeLayout) view1.findViewById(R.id.rl_2);
-//    		rl1 = (RelativeLayout) view1.findViewById(R.id.rl_1);
-//    		rl1.setOnClickListener(myOnClickListener);
-//    		rl2.setOnClickListener(myOnClickListener);
-
         main_mask_bg = (ImageView)findViewById(R.id.main_menu);
         main_mask_bg.setOnClickListener(myOnClickListener);
         // set view adapter
@@ -76,6 +67,8 @@ public class WineryMapHome extends FragmentActivity
         aq.id(R.id.goto_search_page).clicked(this, "goToSearch");
         aq.id(R.id.goto_news_page).clicked(this, "goToNews");
         aq.id(R.id.goto_my_favorite).clicked(this, "goToMyFavorite");
+        aq.id(R.id.goto_history).clicked(this, "goToHistory");
+        aq.id(R.id.goto_help).clicked(this, "goToMyFavorite");
     }
 
     public class MyOnClickListener implements View.OnClickListener
@@ -160,5 +153,17 @@ public class WineryMapHome extends FragmentActivity
     {
         Intent searchIntent = new Intent(this, MyFavoriteActivity.class);
         startActivity(searchIntent);
+    }
+
+    public void goToHistory(View view)
+    {
+        Intent historyIntent = new Intent(this, HistoryActivity.class);
+        startActivity(historyIntent);
+    }
+
+    public void goToHelp(View view)
+    {
+        Intent helpIntent = new Intent(this, HelpActivity.class);
+        startActivity(helpIntent);
     }
 }

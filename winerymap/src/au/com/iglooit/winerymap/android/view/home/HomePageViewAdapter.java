@@ -18,9 +18,9 @@ public class HomePageViewAdapter extends FragmentPagerAdapter
         super(fm);
         _context = context;
         fragments = new ArrayList<Fragment>();
-        fragments.add(NewsFragment.newInstance(_context));
+        fragments.add(HistoryFragment.newInstance(_context));
         fragments.add(MapSearchFragment.newInstance(_context));
-        fragments.add(SearchDetailsFragment.newInstance(_context));
+        fragments.add(MyFavoriteFragment.newInstance(_context));
     }
 
     @Override
